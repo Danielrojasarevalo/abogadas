@@ -1,0 +1,54 @@
+<ion-split-pane contentId="contenido-principal" when="lg">
+  <!-- Menú lateral -->
+  <ion-menu contentId="contenido-principal" type="overlay">
+    <ion-content>
+      <div class="cabecera-menu">
+        <app-logo [tamano]="44" />
+        <div>
+          <strong>Elizabeth Imbachi</strong>
+          <strong>&amp; Katherine Rojas</strong>
+          <span>Abogadas</span>
+        </div>
+      </div>
+
+      <ion-list lines="none" class="navegacion">
+        @for (opcion of opciones; track opcion.ruta) {
+          <ion-menu-toggle [autoHide]="false">
+            <ion-item
+              button
+              [detail]="false"
+              [routerLink]="opcion.ruta"
+              routerLinkActive="activa"
+              routerDirection="root"
+            >
+              <ion-icon slot="start" [name]="opcion.icono" aria-hidden="true" />
+              <ion-label>{{ opcion.titulo }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        }
+      </ion-list>
+
+      <!-- Ver la página pública tal como la ven los clientes -->
+      <a class="ver-sitio" routerLink="/" target="_blank">
+        <ion-icon name="eye-outline" /> Ver página pública
+      </a>
+    </ion-content>
+
+    <!-- Usuaria conectada y botón de salir -->
+    <ion-footer class="pie-menu">
+      <div class="usuaria">
+        <span class="circulo">{{ inicial() }}</span>
+        <div class="datos">
+          <strong>{{ usuaria()?.nombre }}</strong>
+          <span>Administradora</span>
+        </div>
+        <button type="button" class="salir" aria-label="Cerrar sesión" (click)="salir()">
+          <ion-icon name="log-out-outline" />
+        </button>
+      </div>
+    </ion-footer>
+  </ion-menu>
+
+  <!-- Aquí se muestran las páginas (inicio, clientes, casos, agenda) -->
+  <ion-router-outlet id="contenido-principal" />
+</ion-split-pane>

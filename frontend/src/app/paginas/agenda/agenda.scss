@@ -1,0 +1,131 @@
+.pestanas {
+  max-width: 320px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid var(--despacho-borde);
+  border-radius: 12px;
+
+  ion-segment-button {
+    --indicator-color: var(--ion-color-primary);
+    --color-checked: var(--ion-color-primary);
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+}
+
+.dia {
+  margin-bottom: 22px;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 10px 4px;
+    font-size: 17px;
+  }
+}
+
+/* Solo la primera letra en mayúscula: "Martes 20 de octubre de 2026" */
+.fecha-dia {
+  display: inline-block;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.hoy {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--ion-color-secondary);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.lista {
+  overflow: hidden;
+}
+
+.cita {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 0 0 16px;
+  border-top: 1px solid var(--despacho-borde);
+
+  &:first-child {
+    border-top: none;
+  }
+
+  ion-checkbox {
+    --checkbox-background-checked: var(--ion-color-success);
+    --border-color-checked: var(--ion-color-success);
+    --border-radius: 6px;
+  }
+
+  &.hecha {
+    .info strong {
+      text-decoration: line-through;
+      color: var(--despacho-suave);
+    }
+
+    .hora {
+      opacity: 0.5;
+    }
+  }
+}
+
+.cuerpo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px 14px 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover strong {
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+.hora {
+  min-width: 72px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ion-color-primary);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  strong {
+    font-size: 15px;
+  }
+
+  > span {
+    font-size: 13px;
+    color: var(--despacho-suave);
+  }
+}
+
+/* Color según el tipo de cita */
+.tipo {
+  font-weight: 600;
+
+  &.audiencia { color: var(--ion-color-danger); }
+  &.vencimiento { color: var(--ion-color-warning-shade); }
+  &.reunion { color: var(--ion-color-primary); }
+}

@@ -1,0 +1,258 @@
+ion-back-button {
+  --color: var(--ion-color-primary);
+}
+
+ion-buttons[slot='end'] ion-button {
+  --border-radius: 10px;
+  margin-right: 8px;
+}
+
+.etiquetas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.area {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ion-color-secondary-shade);
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 16px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bloque {
+  padding: 20px;
+
+  h2 {
+    margin: 0 0 14px;
+    font-size: 20px;
+  }
+}
+
+.titulo-bloque {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+/* ===== Formulario de nueva actuación ===== */
+.nueva-actuacion {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: #fbfaf7;
+  border: 1px solid var(--despacho-borde);
+
+  ion-input,
+  ion-textarea {
+    --background: #fff;
+    --border-radius: 10px;
+  }
+
+  .visible {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--despacho-suave);
+  }
+
+  .agregar {
+    justify-self: end;
+    --border-radius: 10px;
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Línea de tiempo ===== */
+.linea-tiempo {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 8px;
+
+  li {
+    position: relative;
+    padding: 0 0 18px 26px;
+    border-left: 2px solid var(--despacho-borde);
+
+    &:last-child {
+      border-left-color: transparent;
+    }
+  }
+
+  .punto {
+    position: absolute;
+    left: -7px;
+    top: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ion-color-secondary);
+    box-shadow: 0 0 0 4px #fff;
+  }
+
+  .fila-fecha {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    strong {
+      margin-right: auto;
+    }
+
+    .ver {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(var(--ion-color-success-rgb), 0.1);
+      color: var(--ion-color-success);
+
+      &.oculta {
+        background: #eceae6;
+        color: var(--despacho-suave);
+      }
+    }
+
+    strong {
+      font-size: 13px;
+      color: var(--ion-color-primary);
+    }
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+}
+
+.borrar {
+  border: none;
+  background: none;
+  color: var(--despacho-suave);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+    color: var(--ion-color-danger);
+    background: rgba(var(--ion-color-danger-rgb), 0.08);
+  }
+}
+
+/* ===== Datos del caso ===== */
+.datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  margin: 0;
+  font-size: 14px;
+
+  dt {
+    color: var(--despacho-suave);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 500;
+    text-align: right;
+  }
+}
+
+.descripcion {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--despacho-borde);
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+/* ===== Citas del caso ===== */
+.cita {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 6px;
+  border: none;
+  border-top: 1px solid var(--despacho-borde);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-secondary);
+  }
+
+  strong {
+    display: block;
+    font-size: 14px;
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--despacho-suave);
+  }
+
+  &.hecha {
+    opacity: 0.6;
+
+    ion-icon {
+      color: var(--ion-color-success);
+    }
+
+    strong {
+      text-decoration: line-through;
+    }
+  }
+}
+
+.sin-datos {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--despacho-suave);
+}

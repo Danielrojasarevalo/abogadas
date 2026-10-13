@@ -1,0 +1,162 @@
+<ion-content>
+  <!-- ===== Header ===== -->
+  <div class="barra">
+    <app-cabecera>
+      <ion-button fill="clear" class="btn-texto ocultar-movil" (click)="cambiarPassword()">
+        <ion-icon slot="start" name="lock-closed-outline" /> Contraseña
+      </ion-button>
+      <ion-button fill="outline" class="btn-salir" (click)="salir()">
+        <ion-icon slot="start" name="log-out-outline" /> Salir
+      </ion-button>
+    </app-cabecera>
+  </div>
+
+  <main class="contenedor-portal">
+    @if (cargando() && !datos()) {
+      <div class="cargando"><ion-spinner name="crescent" /></div>
+    } @else if (datos(); as d) {
+      <!-- ===== Bienvenida ===== -->
+      <section class="bienvenida">
+        <div>
+          <span class="sobre">Portal de clientes</span>
+          <h1>Hola, {{ nombre() }}</h1>
+          <p>Aquí puedes ver cómo va tu proceso, tus próximas citas y el contacto de tu abogada.</p>
+        </div>
+
+        <!-- Próxima cita destacada -->
+        @if (proxima(); as cita) {
+          <div class="proxima">
+            <span class="etiqueta-proxima">Tu próxima cita</span>
+            <strong>{{ cita.titulo }}</strong>
+            <span class="cuando">
+              <ion-icon name="calendar-outline" /> {{ cita.fecha_hora | date: "EEEE d 'de' MMMM" }}
+            </span>
+            <span class="cuando"><ion-icon name="time-outline" /> {{ cita.fecha_hora | date: 'h:mm a' }}</span>
+            @if (cita.lugar) {
+              <span class="cuando"><ion-icon name="business-outline" /> {{ cita.lugar }}</span>
+            }
+          </div>
+        }
+      </section>
+
+      <div class="columnas">
+        <div class="principal">
+          <!-- ===== Citas ===== -->
+          <section class="tarjeta bloque">
+            <h2><ion-icon name="calendar-outline" /> Tus citas</h2>
+            @for (cita of d.citas; track cita.id) {
+              <div class="cita">
+                <div class="dia">
+                  <span>{{ cita.fecha_hora | date: 'MMM' }}</span>
+                  <strong>{{ cita.fecha_hora | date: 'd' }}</strong>
+                </div>
+                <div class="info">
+                  <strong>{{ cita.titulo }}</strong>
+                  <span class="detalle">
+                    <span class="tipo {{ cita.tipo }}">{{ cita.tipo_texto }}</span>
+                    · {{ cita.fecha_hora | date: "EEEE d 'de' MMMM 'de' y" }}
+                  </span>
+                  <span class="detalle">
+                    <ion-icon name="time-outline" /> {{ cita.fecha_hora | date: 'h:mm a' }}
+                    @if (cita.lugar) {
+                      · <ion-icon name="business-outline" /> {{ cita.lugar }}
+                    }
+                  </span>
+                  @if (cita.caso_titulo) {
+                    <span class="detalle"><ion-icon name="briefcase-outline" /> {{ cita.caso_titulo }}</span>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <p class="sin-datos">No tienes citas pendientes por ahora.</p>
+            }
+          </section>
+
+          <!-- ===== Casos ===== -->
+          @for (caso of d.casos; track caso.id) {
+            <section class="tarjeta bloque caso">
+              <div class="caso-cabeza">
+                <div>
+                  <span class="etiqueta {{ caso.estado }}">{{ caso.estado_texto }}</span>
+                  <span class="area">{{ caso.area_texto }}</span>
+                  <h2>{{ caso.titulo }}</h2>
+                </div>
+              </div>
+
+              <dl class="datos">
+                @if (caso.radicado) {
+                  <div><dt>Radicado</dt><dd>{{ caso.radicado }}</dd></div>
+                }
+                @if (caso.juzgado) {
+                  <div><dt>Juzgado / entidad</dt><dd>{{ caso.juzgado }}</dd></div>
+                }
+                <div><dt>Inicio</dt><dd>{{ caso.fecha_inicio | date: 'longDate' }}</dd></div>
+                @if (caso.abogada_nombre) {
+                  <div><dt>Tu abogada</dt><dd>{{ caso.abogada_nombre }}</dd></div>
+                }
+              </dl>
+
+              @if (caso.abogada_telefono || caso.abogada_correo) {
+                <div class="contacto-abogada">
+                  @if (caso.abogada_telefono) {
+                    <a [href]="'tel:' + caso.abogada_telefono"><ion-icon name="call-outline" /> {{ caso.abogada_telefono }}</a>
+                  }
+                  @if (caso.abogada_correo) {
+                    <a [href]="'mailto:' + caso.abogada_correo"><ion-icon name="mail-outline" /> {{ caso.abogada_correo }}</a>
+                  }
+                </div>
+              }
+
+              @if (caso.descripcion) {
+                <p class="descripcion">{{ caso.descripcion }}</p>
+              }
+
+              <h3>¿Cómo va tu proceso?</h3>
+              <ol class="linea-tiempo">
+                @for (act of caso.actuaciones; track act.id) {
+                  <li>
+                    <span class="punto"></span>
+                    <strong>{{ act.fecha | date: 'longDate' }}</strong>
+                    <p>{{ act.descripcion }}</p>
+                  </li>
+                } @empty {
+                  <p class="sin-datos">Aún no hay novedades registradas en este proceso.</p>
+                }
+              </ol>
+            </section>
+          } @empty {
+            <section class="tarjeta bloque vacio">
+              <ion-icon name="briefcase-outline" />
+              <p>Todavía no tienes procesos registrados. Tu abogada los agregará aquí.</p>
+            </section>
+          }
+        </div>
+
+        <!-- ===== Datos del cliente ===== -->
+        <aside class="tarjeta bloque lateral">
+          <h2><ion-icon name="person-outline" /> Tus datos</h2>
+          <dl class="mis-datos">
+            <dt>Nombre</dt>
+            <dd>{{ d.cliente.nombre }}</dd>
+            <dt>Documento</dt>
+            <dd>{{ d.cliente.documento }}</dd>
+            @if (d.cliente.correo) {
+              <dt>Correo</dt>
+              <dd>{{ d.cliente.correo }}</dd>
+            }
+            @if (d.cliente.telefono) {
+              <dt>Teléfono</dt>
+              <dd>{{ d.cliente.telefono }}</dd>
+            }
+          </dl>
+          <ion-button fill="outline" expand="block" class="btn-pass" (click)="cambiarPassword()">
+            Cambiar contraseña
+          </ion-button>
+          <p class="nota">¿Algún dato está mal? Avísale a tu abogada para corregirlo.</p>
+        </aside>
+      </div>
+    }
+  </main>
+
+  <app-pie [despacho]="despacho()" />
+</ion-content>

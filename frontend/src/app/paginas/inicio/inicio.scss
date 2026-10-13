@@ -1,0 +1,200 @@
+.fecha {
+  margin: 0 0 4px !important;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ion-color-secondary-shade) !important;
+}
+
+/* ===== Tarjetas con números ===== */
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.numero {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+
+  strong {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 34px;
+    color: var(--ion-color-primary);
+    line-height: 1.1;
+    margin-top: 10px;
+  }
+
+  > span:last-child {
+    color: var(--despacho-suave);
+    font-size: 14px;
+  }
+}
+
+.icono {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 22px;
+
+  &.azul { background: rgba(var(--ion-color-primary-rgb), 0.08); color: var(--ion-color-primary); }
+  &.dorado { background: rgba(var(--ion-color-secondary-rgb), 0.15); color: var(--ion-color-secondary-shade); }
+  &.verde { background: rgba(var(--ion-color-success-rgb), 0.12); color: var(--ion-color-success); }
+  &.gris { background: #eceae6; color: var(--despacho-suave); }
+}
+
+/* ===== Dos columnas: citas y accesos ===== */
+.columnas {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bloque {
+  padding: 20px;
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+  }
+}
+
+.titulo-bloque {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.cita {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 8px;
+  border: none;
+  border-top: 1px solid var(--despacho-borde);
+  background: none;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+
+  &:hover {
+    background: #faf8f4;
+  }
+}
+
+/* Cuadrito con el día de la cita */
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--ion-color-primary);
+  color: #fff;
+
+  span {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ion-color-secondary-tint);
+  }
+
+  strong {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  strong {
+    font-size: 15px;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--despacho-suave);
+  }
+}
+
+.acceso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px dashed var(--despacho-borde);
+  border-radius: 12px;
+  background: #fbfaf7;
+  font: inherit;
+  font-weight: 500;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-secondary);
+  }
+
+  &:hover {
+    border-color: var(--ion-color-secondary);
+    background: #fff;
+  }
+}
+
+/* Aviso de solicitudes nuevas */
+.aviso-solicitudes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border-left: 4px solid var(--ion-color-secondary);
+  text-decoration: none;
+  color: inherit;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-secondary);
+  }
+
+  .ver {
+    margin-left: auto;
+    font-weight: 600;
+    color: var(--ion-color-secondary-shade);
+  }
+}

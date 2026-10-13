@@ -1,0 +1,110 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+  @if (cargando()) {
+    <ion-progress-bar type="indeterminate" color="secondary" class="cargando" />
+  }
+</ion-header>
+
+<ion-content>
+  <!-- Deslizar hacia abajo para recargar (en celular) -->
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <div class="contenedor">
+    <!-- Saludo -->
+    <div class="encabezado-pagina">
+      <p class="fecha">{{ fechaHoy | date: "EEEE d 'de' MMMM" }}</p>
+      <h1>{{ saludo() }}, {{ nombre() }}</h1>
+      <p>Este es el resumen del despacho.</p>
+    </div>
+
+    <!-- Números principales -->
+    <div class="numeros">
+      <a class="tarjeta numero tarjeta-clic" routerLink="/panel/clientes">
+        <span class="icono azul"><ion-icon name="people-outline" /></span>
+        <strong>{{ resumen()?.clientes ?? '—' }}</strong>
+        <span>Clientes</span>
+      </a>
+      <a class="tarjeta numero tarjeta-clic" routerLink="/panel/casos">
+        <span class="icono dorado"><ion-icon name="briefcase-outline" /></span>
+        <strong>{{ resumen()?.casos_activos ?? '—' }}</strong>
+        <span>Casos activos</span>
+      </a>
+      <a class="tarjeta numero tarjeta-clic" routerLink="/panel/agenda">
+        <span class="icono verde"><ion-icon name="calendar-outline" /></span>
+        <strong>{{ resumen()?.citas_pendientes ?? '—' }}</strong>
+        <span>Citas pendientes</span>
+      </a>
+      <a class="tarjeta numero tarjeta-clic" routerLink="/panel/casos">
+        <span class="icono gris"><ion-icon name="folder-open-outline" /></span>
+        <strong>{{ resumen()?.casos_cerrados ?? '—' }}</strong>
+        <span>Casos cerrados</span>
+      </a>
+    </div>
+
+    <!-- Aviso de solicitudes nuevas desde la página pública -->
+    @if (resumen()?.solicitudes_nuevas) {
+      <a class="aviso-solicitudes tarjeta tarjeta-clic" routerLink="/panel/solicitudes">
+        <ion-icon name="mail-outline" />
+        <span>
+          Tienes <strong>{{ resumen()?.solicitudes_nuevas }}</strong>
+          {{ resumen()?.solicitudes_nuevas === 1 ? 'solicitud nueva' : 'solicitudes nuevas' }} de consulta.
+        </span>
+        <span class="ver">Ver →</span>
+      </a>
+    }
+
+    <div class="columnas">
+      <!-- Próximas citas -->
+      <section class="tarjeta bloque">
+        <div class="titulo-bloque">
+          <h2>Próximas citas</h2>
+          <ion-button fill="clear" size="small" routerLink="/panel/agenda">Ver agenda</ion-button>
+        </div>
+
+        @for (cita of resumen()?.proximas_citas ?? []; track cita.id) {
+          <button type="button" class="cita" (click)="editarCita(cita)">
+            <div class="dia">
+              <span>{{ cita.fecha_hora | date: 'MMM' }}</span>
+              <strong>{{ cita.fecha_hora | date: 'd' }}</strong>
+            </div>
+            <div class="detalle">
+              <strong>{{ cita.titulo }}</strong>
+              <span>
+                <ion-icon name="time-outline" /> {{ cita.fecha_hora | date: 'h:mm a' }}
+                · {{ cita.tipo_texto }}
+                @if (cita.cliente_nombre) {
+                  · {{ cita.cliente_nombre }}
+                }
+              </span>
+            </div>
+          </button>
+        } @empty {
+          <div class="vacio">
+            <ion-icon name="calendar-outline" />
+            <p>No hay citas próximas.</p>
+          </div>
+        }
+      </section>
+
+      <!-- Accesos rápidos -->
+      <section class="tarjeta bloque">
+        <h2>Accesos rápidos</h2>
+        <button type="button" class="acceso" (click)="nuevoCliente()">
+          <ion-icon name="person-outline" /> Registrar cliente
+        </button>
+        <button type="button" class="acceso" (click)="nuevoCaso()">
+          <ion-icon name="briefcase-outline" /> Abrir nuevo caso
+        </button>
+        <button type="button" class="acceso" (click)="nuevaCita()">
+          <ion-icon name="calendar-outline" /> Agendar cita
+        </button>
+      </section>
+    </div>
+  </div>
+</ion-content>

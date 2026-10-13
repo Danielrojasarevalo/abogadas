@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+  @if (cargando()) {
+    <ion-progress-bar type="indeterminate" color="secondary" class="cargando" />
+  }
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+    <div class="encabezado-pagina">
+      <h1>Clientes</h1>
+      <p>{{ clientes().length }} {{ clientes().length === 1 ? 'cliente registrado' : 'clientes registrados' }}</p>
+    </div>
+
+    <ion-searchbar
+      class="buscador"
+      placeholder="Buscar por nombre o documento"
+      [debounce]="350"
+      (ionInput)="alBuscar($event)"
+    />
+
+    <div class="rejilla">
+      @for (cliente of clientes(); track cliente.id) {
+        <article class="tarjeta tarjeta-clic cliente" (click)="editar(cliente)">
+          <div class="cabeza">
+            <span class="iniciales">{{ iniciales(cliente.nombre) }}</span>
+            <div>
+              <h3>{{ cliente.nombre }}</h3>
+              <span class="documento">{{ cliente.tipo_documento }} {{ cliente.numero_documento }}</span>
+            </div>
+          </div>
+
+          <ul class="contacto">
+            @if (cliente.telefono) {
+              <li><ion-icon name="call-outline" /> {{ cliente.telefono }}</li>
+            }
+            @if (cliente.correo) {
+              <li><ion-icon name="mail-outline" /> {{ cliente.correo }}</li>
+            }
+          </ul>
+
+          <div class="pie">
+            <button type="button" class="enlace" (click)="verCasos(cliente, $event)">
+              <ion-icon name="briefcase-outline" />
+              {{ cliente.total_casos }} {{ cliente.total_casos === 1 ? 'caso' : 'casos' }}
+            </button>
+            <button type="button" class="enlace dorado" (click)="nuevoCaso(cliente, $event)">
+              <ion-icon name="add-outline" /> Nuevo caso
+            </button>
+          </div>
+        </article>
+      } @empty {
+        @if (!cargando()) {
+          <div class="vacio tarjeta">
+            <ion-icon name="people-outline" />
+            <p>{{ buscar ? 'No se encontraron clientes.' : 'Aún no hay clientes. Pulsa + para registrar el primero.' }}</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Botón flotante para agregar -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="nuevo()" aria-label="Nuevo cliente">
+      <ion-icon name="add-outline" />
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

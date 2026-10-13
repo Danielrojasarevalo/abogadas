@@ -1,0 +1,55 @@
+/* Estilos compartidos por las ventanas de formulario (cliente, caso, cita) */
+
+ion-toolbar {
+  --background: #ffffff;
+  --border-width: 0 0 1px 0;
+  --border-color: var(--despacho-borde);
+
+  ion-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--ion-color-primary);
+    font-size: 20px;
+  }
+}
+
+ion-content {
+  --background: #fbfaf7;
+}
+
+/* Dos campos lado a lado (en celular quedan uno debajo del otro) */
+.fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.casilla {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+  font-size: 15px;
+}
+
+/* Barra de botones de abajo */
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-top: 1px solid var(--despacho-borde);
+  box-shadow: none;
+
+  .espacio {
+    flex: 1;
+  }
+
+  ion-button {
+    --border-radius: 10px;
+  }
+}

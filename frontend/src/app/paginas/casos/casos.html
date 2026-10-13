@@ -1,0 +1,77 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+  @if (cargando()) {
+    <ion-progress-bar type="indeterminate" color="secondary" class="cargando" />
+  }
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+    <div class="encabezado-pagina">
+      <h1>Casos</h1>
+      <p>Procesos y asuntos legales del despacho</p>
+    </div>
+
+    <!-- Filtro por estado -->
+    <ion-segment [scrollable]="true" [value]="estado()" (ionChange)="cambiarEstado($event)" class="filtro">
+      <ion-segment-button value="">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      @for (e of estados; track e.valor) {
+        <ion-segment-button [value]="e.valor">
+          <ion-label>{{ e.texto }}</ion-label>
+        </ion-segment-button>
+      }
+    </ion-segment>
+
+    <ion-searchbar
+      class="buscador"
+      placeholder="Buscar por título, radicado o cliente"
+      [value]="buscar"
+      [debounce]="350"
+      (ionInput)="alBuscar($event)"
+    />
+
+    <div class="rejilla">
+      @for (caso of casos(); track caso.id) {
+        <article class="tarjeta tarjeta-clic caso" (click)="abrir(caso)">
+          <div class="arriba">
+            <span class="etiqueta {{ caso.estado }}">{{ caso.estado_texto }}</span>
+            <span class="area">{{ caso.area_texto }}</span>
+          </div>
+
+          <h3>{{ caso.titulo }}</h3>
+          <p class="cliente"><ion-icon name="person-outline" /> {{ caso.cliente_nombre }}</p>
+
+          @if (caso.radicado) {
+            <p class="radicado"><ion-icon name="document-text-outline" /> {{ caso.radicado }}</p>
+          }
+
+          <div class="pie">
+            <span><ion-icon name="calendar-outline" /> {{ caso.fecha_inicio | date: 'mediumDate' }}</span>
+            @if (caso.abogada_nombre) {
+              <span class="responsable">{{ caso.abogada_nombre }}</span>
+            }
+          </div>
+        </article>
+      } @empty {
+        @if (!cargando()) {
+          <div class="vacio tarjeta">
+            <ion-icon name="briefcase-outline" />
+            <p>No hay casos para mostrar.</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="nuevo()" aria-label="Nuevo caso">
+      <ion-icon name="add-outline" />
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

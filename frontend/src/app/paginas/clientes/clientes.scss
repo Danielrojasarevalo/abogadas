@@ -1,0 +1,94 @@
+.cliente {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+}
+
+.cabeza {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.25;
+  }
+}
+
+/* Círculo con las iniciales del cliente */
+.iniciales {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #1f2a44, #3a4766);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.documento {
+  font-size: 13px;
+  color: var(--despacho-suave);
+}
+
+.contacto {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  font-size: 14px;
+  color: #3d4352;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  ion-icon {
+    flex-shrink: 0;
+    color: var(--despacho-suave);
+  }
+}
+
+.pie {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--despacho-borde);
+}
+
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(var(--ion-color-primary-rgb), 0.06);
+  }
+
+  &.dorado {
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+.vacio {
+  grid-column: 1 / -1;
+}

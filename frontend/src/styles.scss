@@ -1,0 +1,228 @@
+/*
+ * Estilos globales de la aplicación.
+ * Primero se cargan los estilos de Ionic y después nuestro tema (colores y letras).
+ */
+
+/* Estilos base de Ionic (obligatorios) */
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+
+/* Utilidades opcionales de Ionic (márgenes, alineación, etc.) */
+@import '@ionic/angular/css/padding.css';
+@import '@ionic/angular/css/flex-utils.css';
+@import '@ionic/angular/css/text-alignment.css';
+@import '@ionic/angular/css/display.css';
+
+/* ===== Tema del despacho: azul marino + dorado ===== */
+:root {
+  /* Color principal: azul marino */
+  --ion-color-primary: #1f2a44;
+  --ion-color-primary-rgb: 31, 42, 68;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #1b253c;
+  --ion-color-primary-tint: #353f57;
+
+  /* Color secundario: dorado */
+  --ion-color-secondary: #b8915a;
+  --ion-color-secondary-rgb: 184, 145, 90;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #a2804f;
+  --ion-color-secondary-tint: #bf9c6b;
+
+  /* Verde, ámbar y rojo suaves para estados */
+  --ion-color-success: #2f7d5b;
+  --ion-color-success-rgb: 47, 125, 91;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #296e50;
+  --ion-color-success-tint: #448a6b;
+
+  --ion-color-warning: #c98a1b;
+  --ion-color-warning-rgb: 201, 138, 27;
+  --ion-color-warning-contrast: #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #b17918;
+  --ion-color-warning-tint: #ce9632;
+
+  --ion-color-danger: #b23a48;
+  --ion-color-danger-rgb: 178, 58, 72;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #9d333f;
+  --ion-color-danger-tint: #ba4e5a;
+
+  /* Fondo color crema y letras */
+  --ion-background-color: #f6f3ee;
+  --ion-text-color: #1f2430;
+  --ion-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --ion-toolbar-background: #f6f3ee;
+  --ion-toolbar-border-color: transparent;
+  --ion-item-background: transparent;
+
+  /* Variables propias reutilizadas en las páginas */
+  --despacho-tarjeta: #ffffff;
+  --despacho-borde: #e7e1d6;
+  --despacho-suave: #6b7280;
+  --despacho-sombra: 0 1px 2px rgba(31, 42, 68, 0.05), 0 8px 24px rgba(31, 42, 68, 0.06);
+}
+
+/* Títulos con letra elegante */
+h1,
+h2,
+h3,
+.titulo-elegante {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--ion-color-primary);
+  letter-spacing: -0.01em;
+}
+
+/* Contenedor centrado para que en pantallas grandes no se estire demasiado */
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 16px 96px;
+}
+
+/* Encabezado de cada página */
+.encabezado-pagina {
+  margin: 12px 0 20px;
+
+  h1 {
+    margin: 0;
+    font-size: 30px;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--despacho-suave);
+  }
+}
+
+/* Tarjeta blanca estándar */
+.tarjeta {
+  background: var(--despacho-tarjeta);
+  border: 1px solid var(--despacho-borde);
+  border-radius: 16px;
+  box-shadow: var(--despacho-sombra);
+}
+
+/* Tarjeta clicable con efecto al pasar el mouse */
+.tarjeta-clic {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(31, 42, 68, 0.06), 0 14px 32px rgba(31, 42, 68, 0.1);
+  }
+}
+
+/* Cuadrícula que se adapta al ancho de la pantalla */
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+}
+
+/* Mensaje cuando una lista está vacía */
+.vacio {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--despacho-suave);
+
+  ion-icon {
+    font-size: 48px;
+    color: var(--ion-color-secondary);
+    margin-bottom: 8px;
+  }
+}
+
+/* Etiqueta pequeña de color (estado, área, etc.) */
+.etiqueta {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+  color: var(--ion-color-primary);
+
+  &.abierto { background: rgba(var(--ion-color-success-rgb), 0.12); color: var(--ion-color-success); }
+  &.en_tramite { background: rgba(var(--ion-color-secondary-rgb), 0.16); color: var(--ion-color-secondary-shade); }
+  &.suspendido { background: rgba(var(--ion-color-warning-rgb), 0.14); color: var(--ion-color-warning-shade); }
+  &.cerrado { background: #eceae6; color: var(--despacho-suave); }
+}
+
+/* Barra de búsqueda con estilo de tarjeta */
+ion-searchbar.buscador {
+  --background: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: none;
+  padding: 0;
+  border: 1px solid var(--despacho-borde);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+/* Formularios dentro de las ventanas modales */
+.formulario {
+  ion-input,
+  ion-select,
+  ion-textarea {
+    --background: #ffffff;
+    --border-radius: 10px;
+    margin-bottom: 14px;
+  }
+}
+
+/* Botón flotante dorado */
+ion-fab-button {
+  --background: var(--ion-color-secondary);
+  --background-activated: var(--ion-color-secondary-shade);
+  --background-hover: var(--ion-color-secondary-tint);
+}
+
+/* Tamaño de las ventanas de formulario en pantallas grandes */
+ion-modal.ventana-formulario {
+  --width: min(640px, 100%);
+  --height: min(760px, 100%);
+  --border-radius: 18px;
+}
+
+/* Botón rojo en las ventanas de confirmación de borrado */
+ion-alert .boton-peligro {
+  color: var(--ion-color-danger) !important;
+  font-weight: 700;
+}
+
+/* Barra superior de las páginas internas */
+ion-header.cabecera-pagina ion-toolbar {
+  --background: var(--ion-background-color);
+  padding-top: 4px;
+}
+
+/* Barra de carga delgada mientras llegan los datos */
+ion-progress-bar.cargando {
+  --background: transparent;
+}
+
+/* Números con forma normal (Playfair dibuja el 0 parecido a una "O") */
+h1,
+h2,
+h3,
+.titulo-elegante,
+strong {
+  font-variant-numeric: lining-nums;
+}
+
+/* En computador el menú está siempre visible: ocultamos la barra con el botón ☰ */
+@media (min-width: 992px) {
+  ion-header.cabecera-pagina ion-toolbar:has(ion-menu-button) {
+    display: none;
+  }
+}

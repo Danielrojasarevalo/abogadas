@@ -1,0 +1,374 @@
+ion-content {
+  --background: #f6f3ee;
+}
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(251, 250, 247, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--despacho-borde);
+}
+
+.btn-texto {
+  --color: var(--ion-color-primary);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.btn-salir {
+  --border-radius: 999px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .ocultar-movil {
+    display: none;
+  }
+}
+
+.contenedor-portal {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 56px;
+}
+
+.cargando {
+  padding: 80px;
+  text-align: center;
+}
+
+.sobre {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ion-color-secondary-shade);
+}
+
+/* ===== Bienvenida ===== */
+.bienvenida {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 6px 0 0;
+    font-size: clamp(30px, 4vw, 40px);
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: var(--despacho-suave);
+  }
+
+  @media (max-width: 760px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.proxima {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 280px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(140deg, #1f2a44, #2f3d60);
+  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.25);
+
+  strong {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+}
+
+.etiqueta-proxima {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ion-color-secondary-tint);
+}
+
+.cuando {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+/* ===== Columnas ===== */
+.columnas {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bloque {
+  padding: 22px;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 21px;
+
+    ion-icon {
+      color: var(--ion-color-secondary);
+    }
+  }
+}
+
+/* ===== Citas ===== */
+.cita {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--despacho-borde);
+
+  &:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 60px;
+  border-radius: 14px;
+  background: var(--ion-color-primary);
+  color: #fff;
+
+  span {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ion-color-secondary-tint);
+  }
+
+  strong {
+    font-size: 22px;
+    line-height: 1;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  strong {
+    font-size: 16px;
+  }
+}
+
+.detalle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: var(--despacho-suave);
+}
+
+.tipo {
+  font-weight: 600;
+
+  &.audiencia { color: var(--ion-color-danger); }
+  &.vencimiento { color: var(--ion-color-warning-shade); }
+  &.reunion { color: var(--ion-color-primary); }
+}
+
+/* ===== Casos ===== */
+.caso {
+  border-top: 4px solid var(--ion-color-secondary);
+
+  h2 {
+    margin-top: 10px;
+  }
+
+  h3 {
+    margin: 22px 0 12px;
+    font-size: 17px;
+  }
+}
+
+.area {
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ion-color-secondary-shade);
+}
+
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0;
+
+  div {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #fbfaf7;
+    border: 1px solid var(--despacho-borde);
+  }
+
+  dt {
+    font-size: 12px;
+    color: var(--despacho-suave);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-weight: 600;
+  }
+}
+
+.contacto-abogada {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    background: rgba(var(--ion-color-secondary-rgb), 0.14);
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+.descripcion {
+  margin: 16px 0 0;
+  line-height: 1.6;
+  white-space: pre-line;
+  color: #3d4352;
+}
+
+.linea-tiempo {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 8px;
+
+  li {
+    position: relative;
+    padding: 0 0 18px 24px;
+    border-left: 2px solid var(--despacho-borde);
+
+    &:last-child {
+      border-left-color: transparent;
+    }
+  }
+
+  .punto {
+    position: absolute;
+    left: -7px;
+    top: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ion-color-secondary);
+    box-shadow: 0 0 0 4px #fff;
+  }
+
+  strong {
+    font-size: 13px;
+    color: var(--ion-color-primary);
+  }
+
+  p {
+    margin: 4px 0 0;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+}
+
+.sin-datos {
+  margin: 0;
+  color: var(--despacho-suave);
+}
+
+/* ===== Datos del cliente ===== */
+.lateral {
+  position: sticky;
+  top: 88px;
+}
+
+.mis-datos {
+  margin: 0 0 16px;
+
+  dt {
+    font-size: 12px;
+    color: var(--despacho-suave);
+  }
+
+  dd {
+    margin: 2px 0 12px;
+    font-weight: 600;
+    word-break: break-word;
+  }
+}
+
+.btn-pass {
+  --border-radius: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+.nota {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--despacho-suave);
+}
+
+.vacio {
+  text-align: center;
+  color: var(--despacho-suave);
+
+  ion-icon {
+    font-size: 44px;
+    color: var(--ion-color-secondary);
+  }
+}

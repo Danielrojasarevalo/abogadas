@@ -1,0 +1,91 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+    <div class="encabezado-pagina">
+      <h1>Mi perfil</h1>
+      <p>Esto es lo que ven los visitantes en la página principal para elegir abogada.</p>
+    </div>
+
+    <div class="columnas">
+      <!-- Perfil -->
+      <section class="tarjeta bloque formulario">
+        <h2>Presentación</h2>
+        <ion-input label="Título profesional" labelPlacement="floating" fill="outline"
+          placeholder="Ej: Abogada especialista en derecho de familia" [(ngModel)]="perfil.titulo" />
+        <ion-textarea label="Cuéntale a tus clientes quién eres" labelPlacement="floating" fill="outline"
+          [autoGrow]="true" rows="5" [(ngModel)]="perfil.descripcion" />
+        <div class="fila">
+          <ion-input label="Teléfono / WhatsApp" labelPlacement="floating" fill="outline" type="tel"
+            [(ngModel)]="perfil.telefono" />
+          <ion-input label="Correo" labelPlacement="floating" fill="outline" type="email"
+            [(ngModel)]="perfil.correo" />
+        </div>
+        <p class="nota">Ese correo también sirve para recuperar tu contraseña.</p>
+        <ion-button (click)="guardarPerfil()">Guardar perfil</ion-button>
+      </section>
+
+      <!-- Ramas (opcionales) -->
+      <section class="tarjeta bloque formulario">
+        <h2>Ramas del derecho <span class="opcional">opcional</span></h2>
+        <p class="nota">
+          Si agregas ramas, los clientes las verán en tu tarjeta y podrán elegirlas al pedir consulta.
+          Si no agregas ninguna, esa sección simplemente no aparece.
+        </p>
+
+        <ul class="ramas">
+          @for (rama of ramas(); track rama.id) {
+            <li>
+              <div>
+                <strong>{{ rama.nombre }}</strong>
+                @if (rama.descripcion) {
+                  <span>{{ rama.descripcion }}</span>
+                }
+              </div>
+              <button type="button" aria-label="Quitar rama" (click)="quitarRama(rama)">
+                <ion-icon name="trash-outline" />
+              </button>
+            </li>
+          } @empty {
+            <li class="vacia">Aún no tienes ramas agregadas.</li>
+          }
+        </ul>
+
+        <div class="nueva">
+          <ion-input label="Rama (ej: Familia, Laboral...)" labelPlacement="floating" fill="outline"
+            [(ngModel)]="nuevaRama.nombre" (keyup.enter)="agregarRama()" />
+          <ion-input label="Descripción corta (opcional)" labelPlacement="floating" fill="outline"
+            [(ngModel)]="nuevaRama.descripcion" (keyup.enter)="agregarRama()" />
+          <ion-button fill="outline" (click)="agregarRama()">
+            <ion-icon slot="start" name="add-outline" /> Agregar rama
+          </ion-button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Despacho -->
+    <section class="tarjeta bloque formulario despacho">
+      <h2>Información del despacho</h2>
+      <p class="nota">Aparece en la portada y en el pie de la página principal. La comparten las dos abogadas.</p>
+      <ion-input label="Frase principal (portada)" labelPlacement="floating" fill="outline" [(ngModel)]="despacho.lema" />
+      <ion-textarea label="Descripción del despacho" labelPlacement="floating" fill="outline" [autoGrow]="true" rows="3"
+        [(ngModel)]="despacho.descripcion" />
+      <div class="fila">
+        <ion-input label="Teléfono" labelPlacement="floating" fill="outline" [(ngModel)]="despacho.telefono" />
+        <ion-input label="Correo" labelPlacement="floating" fill="outline" type="email" [(ngModel)]="despacho.correo" />
+      </div>
+      <div class="fila">
+        <ion-input label="Dirección" labelPlacement="floating" fill="outline" [(ngModel)]="despacho.direccion" />
+        <ion-input label="Horario de atención" labelPlacement="floating" fill="outline"
+          placeholder="Lunes a viernes, 8:00 a.m. – 5:00 p.m." [(ngModel)]="despacho.horario" />
+      </div>
+      <ion-button (click)="guardarDespacho()">Guardar información</ion-button>
+    </section>
+  </div>
+</ion-content>

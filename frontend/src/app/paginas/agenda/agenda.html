@@ -1,0 +1,79 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+  @if (cargando()) {
+    <ion-progress-bar type="indeterminate" color="secondary" class="cargando" />
+  }
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+    <div class="encabezado-pagina">
+      <h1>Agenda</h1>
+      <p>Reuniones, audiencias y vencimientos</p>
+    </div>
+
+    <ion-segment [value]="vista()" (ionChange)="cambiarVista($event)" class="pestanas">
+      <ion-segment-button value="proximas">
+        <ion-label>Próximas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="todas">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    @for (dia of dias(); track dia.fecha) {
+      <section class="dia">
+        <h2 [class.es-hoy]="dia.fecha === hoy">
+          @if (dia.fecha === hoy) {
+            <span class="hoy">Hoy</span>
+          }
+          <span class="fecha-dia">{{ dia.fecha + 'T00:00' | date: "EEEE d 'de' MMMM 'de' y" }}</span>
+        </h2>
+
+        <div class="tarjeta lista">
+          @for (cita of dia.citas; track cita.id) {
+            <div class="cita" [class.hecha]="cita.completada">
+              <ion-checkbox
+                [checked]="cita.completada"
+                aria-label="Marcar como completada"
+                (ionChange)="cambiarCompletada(cita, $event)"
+              />
+              <button type="button" class="cuerpo" (click)="editar(cita)">
+                <span class="hora">{{ cita.fecha_hora | date: 'h:mm a' }}</span>
+                <span class="info">
+                  <strong>{{ cita.titulo }}</strong>
+                  <span>
+                    <span class="tipo {{ cita.tipo }}">{{ cita.tipo_texto }}</span>
+                    @if (cita.cliente_nombre) {
+                      · {{ cita.cliente_nombre }}
+                    }
+                    @if (cita.lugar) {
+                      · {{ cita.lugar }}
+                    }
+                  </span>
+                </span>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    } @empty {
+      @if (!cargando()) {
+        <div class="vacio tarjeta">
+          <ion-icon name="calendar-outline" />
+          <p>{{ vista() === 'proximas' ? 'No tienes citas próximas.' : 'No hay citas registradas.' }}</p>
+        </div>
+      }
+    }
+  </div>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="nueva()" aria-label="Nueva cita">
+      <ion-icon name="add-outline" />
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

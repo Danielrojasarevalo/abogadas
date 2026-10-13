@@ -1,0 +1,99 @@
+.pestanas {
+  max-width: 320px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid var(--despacho-borde);
+  border-radius: 12px;
+
+  ion-segment-button {
+    --indicator-color: var(--ion-color-primary);
+    --color-checked: var(--ion-color-primary);
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.solicitud {
+  padding: 18px 20px;
+  border-left: 4px solid var(--ion-color-secondary);
+
+  &.atendida {
+    border-left-color: var(--despacho-borde);
+    opacity: 0.75;
+  }
+}
+
+.arriba {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--despacho-suave);
+}
+
+.estado {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #eceae6;
+  color: var(--despacho-suave);
+
+  &.nueva {
+    background: rgba(var(--ion-color-secondary-rgb), 0.16);
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+.mensaje {
+  margin: 12px 0;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.contacto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ion-color-primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--despacho-borde);
+
+  ion-button {
+    --border-radius: 8px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}

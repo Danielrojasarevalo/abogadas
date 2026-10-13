@@ -1,0 +1,12 @@
+# Archivo con contraseñas, no se sube a GitHub
+.env
+
+# Entorno virtual de Python y archivos compilados
+backend/venv/
+__pycache__/
+*.pyc
+
+# Dependencias y compilados de Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

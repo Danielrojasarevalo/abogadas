@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border cabecera-pagina">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button />
+    </ion-buttons>
+  </ion-toolbar>
+  @if (cargando()) {
+    <ion-progress-bar type="indeterminate" color="secondary" class="cargando" />
+  }
+</ion-header>
+
+<ion-content>
+  <div class="contenedor">
+    <div class="encabezado-pagina">
+      <h1>Solicitudes</h1>
+      <p>Consultas enviadas desde la página principal</p>
+    </div>
+
+    <ion-segment [value]="filtro()" (ionChange)="cambiarFiltro($event)" class="pestanas">
+      <ion-segment-button value="mias"><ion-label>Para mí</ion-label></ion-segment-button>
+      <ion-segment-button value="todas"><ion-label>Todas</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <div class="lista">
+      @for (s of solicitudes(); track s.id) {
+        <article class="tarjeta solicitud" [class.atendida]="s.atendida">
+          <div class="arriba">
+            <div>
+              <h3>{{ s.nombre }}</h3>
+              <span class="meta">
+                {{ s.creado | date: "d MMM y, h:mm a" }} · para <strong>{{ s.abogada_nombre }}</strong>
+                @if (s.rama) {
+                  · {{ s.rama }}
+                }
+              </span>
+            </div>
+            <span class="estado" [class.nueva]="!s.atendida">{{ s.atendida ? 'Atendida' : 'Nueva' }}</span>
+          </div>
+
+          <p class="mensaje">{{ s.mensaje }}</p>
+
+          <div class="contacto">
+            <a [href]="'tel:' + s.telefono"><ion-icon name="call-outline" /> {{ s.telefono }}</a>
+            @if (s.correo) {
+              <a [href]="'mailto:' + s.correo"><ion-icon name="mail-outline" /> {{ s.correo }}</a>
+            }
+          </div>
+
+          <div class="acciones">
+            @if (!s.atendida) {
+              <ion-button size="small" (click)="registrarCliente(s)">
+                <ion-icon slot="start" name="person-outline" /> Registrar como cliente
+              </ion-button>
+              <ion-button size="small" fill="outline" (click)="marcar(s, true)">Marcar atendida</ion-button>
+            } @else {
+              <ion-button size="small" fill="outline" (click)="marcar(s, false)">Marcar como nueva</ion-button>
+            }
+            <ion-button size="small" fill="clear" color="danger" (click)="borrar(s)">
+              <ion-icon slot="icon-only" name="trash-outline" />
+            </ion-button>
+          </div>
+        </article>
+      } @empty {
+        @if (!cargando()) {
+          <div class="vacio tarjeta">
+            <ion-icon name="mail-outline" />
+            <p>No hay solicitudes {{ filtro() === 'mias' ? 'para ti' : '' }} por ahora.</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</ion-content>

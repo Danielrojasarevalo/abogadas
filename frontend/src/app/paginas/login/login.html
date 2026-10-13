@@ -1,0 +1,163 @@
+<ion-content [fullscreen]="true">
+  <div class="pantalla">
+    <!-- Panel izquierdo: marca del despacho -->
+    <section class="marca">
+      <div class="marca-contenido">
+        <app-logo [tamano]="72" />
+        <h1>Elizabeth Imbachi<br /><span class="y">&amp;</span> Katherine Rojas</h1>
+        <p class="subtitulo">Abogadas</p>
+        <p class="frase">“La justicia es la constante y perpetua voluntad de dar a cada uno lo suyo.”</p>
+        <span class="autor">— Ulpiano</span>
+      </div>
+    </section>
+
+    <!-- Panel derecho: formularios -->
+    <section class="formulario-login">
+      <div class="tarjeta caja">
+        <a class="volver" routerLink="/">← Volver a la página principal</a>
+
+        <!-- Pestañas Entrar / Crear cuenta -->
+        @if (modo() === 'entrar' || modo() === 'crear') {
+          <div class="pestanas" role="tablist">
+            <button type="button" role="tab" [class.activa]="modo() === 'entrar'" (click)="cambiarModo('entrar')">
+              Iniciar sesión
+            </button>
+            <button type="button" role="tab" [class.activa]="modo() === 'crear'" (click)="cambiarModo('crear')">
+              Crear cuenta
+            </button>
+          </div>
+        }
+
+        @switch (modo()) {
+          <!-- ========== ENTRAR ========== -->
+          @case ('entrar') {
+            <form (ngSubmit)="entrar()">
+              <p class="ayuda">
+                Para clientes y abogadas del despacho.<br />
+                <strong>Clientes:</strong> tu usuario es tu número de documento.
+              </p>
+
+              <ion-input name="usuario" label="Usuario" labelPlacement="floating" fill="outline"
+                autocomplete="username" [(ngModel)]="usuario">
+                <ion-icon slot="start" name="person-outline" aria-hidden="true" />
+              </ion-input>
+
+              <ion-input name="password" label="Contraseña" labelPlacement="floating" fill="outline"
+                autocomplete="current-password" [type]="verPassword() ? 'text' : 'password'" [(ngModel)]="password">
+                <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true" />
+                <ion-button slot="end" fill="clear" type="button" aria-label="Mostrar u ocultar contraseña"
+                  (click)="verPassword.set(!verPassword())">
+                  <ion-icon slot="icon-only" [name]="verPassword() ? 'eye-off-outline' : 'eye-outline'" />
+                </ion-button>
+              </ion-input>
+
+              <button type="button" class="enlace-olvido" (click)="cambiarModo('recuperar')">
+                ¿Olvidaste tu contraseña?
+              </button>
+
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+
+              <ion-button type="submit" expand="block" class="boton-principal" [disabled]="cargando()">
+                @if (cargando()) { <ion-spinner name="crescent" /> } @else { Entrar }
+              </ion-button>
+            </form>
+          }
+
+          <!-- ========== CREAR CUENTA ========== -->
+          @case ('crear') {
+            <form (ngSubmit)="crearCuenta()">
+              <p class="ayuda">Crea tu cuenta de cliente para seguir tu proceso y tus citas.</p>
+
+              <ion-input name="nombre" label="Nombre completo *" labelPlacement="floating" fill="outline"
+                autocomplete="name" [(ngModel)]="nueva.nombre" />
+
+              <div class="fila">
+                <ion-select name="tipo" label="Documento" labelPlacement="floating" fill="outline"
+                  interface="popover" [(ngModel)]="nueva.tipo_documento">
+                  @for (t of tiposDocumento; track t.valor) {
+                    <ion-select-option [value]="t.valor">{{ t.valor }}</ion-select-option>
+                  }
+                </ion-select>
+                <ion-input name="documento" label="Número de documento *" labelPlacement="floating" fill="outline"
+                  [(ngModel)]="nueva.numero_documento" />
+              </div>
+
+              <ion-input name="correo" type="email" label="Correo *" labelPlacement="floating" fill="outline"
+                autocomplete="email" [(ngModel)]="nueva.correo" />
+              <ion-input name="telefono" type="tel" label="Teléfono" labelPlacement="floating" fill="outline"
+                autocomplete="tel" [(ngModel)]="nueva.telefono" />
+
+              <div class="fila">
+                <ion-input name="pass1" type="password" label="Contraseña *" labelPlacement="floating" fill="outline"
+                  autocomplete="new-password" [(ngModel)]="nueva.password" />
+                <ion-input name="pass2" type="password" label="Repetir contraseña *" labelPlacement="floating"
+                  fill="outline" autocomplete="new-password" [(ngModel)]="nueva.confirmar" />
+              </div>
+              <p class="nota">Mínimo 8 caracteres, que no sea solo números ni muy común.</p>
+
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+
+              <ion-button type="submit" expand="block" class="boton-principal" [disabled]="cargando()">
+                @if (cargando()) { <ion-spinner name="crescent" /> } @else { Crear cuenta }
+              </ion-button>
+            </form>
+          }
+
+          <!-- ========== RECUPERAR: paso 1 ========== -->
+          @case ('recuperar') {
+            <form (ngSubmit)="pedirCodigo()">
+              <h2>Recuperar contraseña</h2>
+              <p class="ayuda">Escribe tu usuario y te enviaremos un código al correo registrado.</p>
+
+              <ion-input name="usuario" label="Usuario (clientes: número de documento)" labelPlacement="floating"
+                fill="outline" [(ngModel)]="usuario">
+                <ion-icon slot="start" name="person-outline" aria-hidden="true" />
+              </ion-input>
+
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+
+              <ion-button type="submit" expand="block" class="boton-principal" [disabled]="cargando()">
+                @if (cargando()) { <ion-spinner name="crescent" /> } @else { Enviar código }
+              </ion-button>
+              <button type="button" class="enlace-olvido centro" (click)="cambiarModo('entrar')">
+                Volver a iniciar sesión
+              </button>
+            </form>
+          }
+
+          <!-- ========== RECUPERAR: paso 2 ========== -->
+          @case ('codigo') {
+            <form (ngSubmit)="cambiarConCodigo()">
+              <h2>Nueva contraseña</h2>
+              @if (mensaje()) {
+                <p class="exito">{{ mensaje() }}</p>
+              }
+
+              <ion-input name="codigo" label="Código de 6 dígitos" labelPlacement="floating" fill="outline"
+                inputmode="numeric" maxlength="6" autocomplete="one-time-code" [(ngModel)]="codigo" />
+              <ion-input name="nueva" type="password" label="Contraseña nueva" labelPlacement="floating"
+                fill="outline" autocomplete="new-password" [(ngModel)]="passwordNueva" />
+
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+
+              <ion-button type="submit" expand="block" class="boton-principal" [disabled]="cargando()">
+                @if (cargando()) { <ion-spinner name="crescent" /> } @else { Guardar contraseña }
+              </ion-button>
+              <button type="button" class="enlace-olvido centro" (click)="cambiarModo('recuperar')">
+                No me llegó el código: enviar otro
+              </button>
+            </form>
+          }
+        }
+      </div>
+    </section>
+  </div>
+</ion-content>

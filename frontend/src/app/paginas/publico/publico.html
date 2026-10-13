@@ -1,0 +1,129 @@
+<ion-content>
+  <div #pagina>
+    <!-- ===== Header fijo ===== -->
+    <div class="barra">
+      <app-cabecera [enlaces]="true" (ir)="irA($event)">
+        <ion-button fill="clear" class="btn-cuenta" [routerLink]="rutaCuenta()">
+          <ion-icon slot="start" name="person-outline" />
+          {{ sesion.conectada() ? 'Mi cuenta' : 'Iniciar sesión' }}
+        </ion-button>
+        <ion-button class="btn-dorado ocultar-movil" (click)="consultar()">Agenda tu consulta</ion-button>
+      </app-cabecera>
+    </div>
+
+    <!-- ===== Portada ===== -->
+    <section class="portada">
+      <div class="portada-contenido">
+        <span class="sobre">Despacho de abogadas</span>
+        <h1>{{ datos()?.despacho?.lema || 'Asesoría legal cercana, clara y comprometida.' }}</h1>
+        <p>
+          {{
+            datos()?.despacho?.descripcion ||
+              'Te acompañamos en cada paso de tu proceso, con atención personalizada y la tranquilidad de saber siempre cómo va tu caso.'
+          }}
+        </p>
+        <div class="botones">
+          <ion-button class="btn-dorado" size="large" (click)="consultar()">Agenda tu consulta</ion-button>
+          <ion-button fill="outline" class="btn-claro" size="large" (click)="irA('nosotras')">Conócenos</ion-button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Mini espacio: cómo funciona ===== -->
+    <section id="como-funciona" class="seccion">
+      <div class="contenedor-sitio">
+        <span class="sobre">Así de fácil</span>
+        <h2>Cómo funciona</h2>
+        <div class="pasos">
+          @for (paso of pasos; track paso.titulo; let i = $index) {
+            <article class="paso">
+              <span class="numero">{{ i + 1 }}</span>
+              <ion-icon [name]="paso.icono" />
+              <h3>{{ paso.titulo }}</h3>
+              <p>{{ paso.texto }}</p>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Las abogadas ===== -->
+    <section id="nosotras" class="seccion fondo-claro">
+      <div class="contenedor-sitio">
+        <span class="sobre">Nuestro equipo</span>
+        <h2>Elige a tu abogada</h2>
+        <p class="intro">Dos profesionales comprometidas con tu caso. Escoge con quién quieres hablar.</p>
+
+        @if (datos(); as d) {
+          <div class="abogadas">
+            @for (a of d.abogadas; track a.id) {
+              <article class="abogada">
+                <div class="cabeza">
+                  <span class="monograma">{{ iniciales(a.nombre) }}</span>
+                  <div>
+                    <h3>{{ a.nombre }}</h3>
+                    <span class="titulo">{{ a.titulo }}</span>
+                  </div>
+                </div>
+
+                <p class="descripcion">
+                  {{ a.descripcion || 'Abogada del despacho, dedicada a brindar una asesoría cercana y clara.' }}
+                </p>
+
+                <!-- Las ramas solo se muestran si la abogada las agregó -->
+                @if (a.ramas.length) {
+                  <div class="ramas">
+                    <span class="etiqueta-ramas">Ramas</span>
+                    <ul>
+                      @for (r of a.ramas; track r.id) {
+                        <li [title]="r.descripcion">{{ r.nombre }}</li>
+                      }
+                    </ul>
+                  </div>
+                }
+
+                @if (a.telefono || a.correo) {
+                  <div class="contacto">
+                    @if (a.telefono) {
+                      <span><ion-icon name="call-outline" /> {{ a.telefono }}</span>
+                    }
+                    @if (a.correo) {
+                      <span><ion-icon name="mail-outline" /> {{ a.correo }}</span>
+                    }
+                  </div>
+                }
+
+                <ion-button expand="block" class="btn-elegir" (click)="consultar(a.id)">
+                  Consultar con {{ a.nombre.split(' ')[0] }}
+                </ion-button>
+              </article>
+            }
+          </div>
+        } @else if (error()) {
+          <p class="aviso">No pudimos cargar la información. <button type="button" (click)="cargar()">Reintentar</button></p>
+        } @else {
+          <div class="cargando"><ion-spinner name="crescent" /></div>
+        }
+      </div>
+    </section>
+
+    <!-- ===== Contacto / llamada final ===== -->
+    <section id="contacto" class="seccion">
+      <div class="contenedor-sitio">
+        <div class="llamada">
+          <div>
+            <h2>¿Tienes una situación legal?</h2>
+            <p>Escríbenos y la abogada que elijas te contactará. Si ya eres cliente, entra para ver tu proceso y tus citas.</p>
+          </div>
+          <div class="botones">
+            <ion-button class="btn-dorado" (click)="consultar()">Agenda tu consulta</ion-button>
+            <ion-button fill="outline" class="btn-claro" routerLink="/login">Soy cliente</ion-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <app-pie [despacho]="datos()?.despacho ?? null" />
+  </div>
+</ion-content>
