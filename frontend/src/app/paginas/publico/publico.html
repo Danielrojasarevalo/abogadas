@@ -66,9 +66,37 @@
                   </div>
                 </div>
 
+                @if (a.frase) {
+                  <p class="frase">“{{ a.frase }}”</p>
+                }
+
+                <!-- Datos rápidos: solo los que la abogada llenó -->
+                @if (a.anios_experiencia || a.tarjeta_profesional || a.atencion) {
+                  <div class="datos-rapidos">
+                    @if (a.anios_experiencia) {
+                      <span><strong>{{ a.anios_experiencia }}+</strong> años de experiencia</span>
+                    }
+                    @if (a.tarjeta_profesional) {
+                      <span><strong>T.P.</strong> {{ a.tarjeta_profesional }}</span>
+                    }
+                    @if (a.atencion) {
+                      <span>{{ a.atencion }}</span>
+                    }
+                  </div>
+                }
+
                 <p class="descripcion">
                   {{ a.descripcion || 'Abogada del despacho, dedicada a brindar una asesoría cercana y clara.' }}
                 </p>
+
+                <!-- Resumen de la formación (lo completo está en "Ver perfil completo") -->
+                @if (primeras(a.formacion, 2).length) {
+                  <ul class="resumen">
+                    @for (l of primeras(a.formacion, 2); track $index) {
+                      <li><ion-icon name="document-text-outline" /> {{ l }}</li>
+                    }
+                  </ul>
+                }
 
                 <!-- Las ramas solo se muestran si la abogada las agregó -->
                 @if (a.ramas.length) {
@@ -93,9 +121,12 @@
                   </div>
                 }
 
-                <ion-button expand="block" class="btn-elegir" (click)="consultar(a.id)">
-                  Consultar con {{ a.nombre.split(' ')[0] }}
-                </ion-button>
+                <div class="botones-tarjeta">
+                  <ion-button fill="outline" class="btn-perfil" (click)="verPerfil(a)">Ver perfil completo</ion-button>
+                  <ion-button class="btn-elegir" (click)="consultar(a.id)">
+                    Consultar con {{ a.nombre.split(' ')[0] }}
+                  </ion-button>
+                </div>
               </article>
             }
           </div>

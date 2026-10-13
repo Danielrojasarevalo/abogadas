@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
 from .models import InfoDespacho, PerfilAbogada, Solicitud
-from .serializers import InfoDespachoSerializer, RamaSerializer
+from .serializers import InfoDespachoSerializer, PerfilAbogadaSerializer, RamaSerializer
 
 
 def abogadas_publicas():
@@ -23,12 +23,10 @@ def abogadas_publicas():
         perfil, _ = PerfilAbogada.objects.get_or_create(usuario=usuaria)
         resultado.append(
             {
+                # Todo lo que la abogada llenó en "Mi perfil"
+                **PerfilAbogadaSerializer(perfil).data,
                 "id": usuaria.id,
                 "nombre": usuaria.first_name or usuaria.username,
-                "titulo": perfil.titulo,
-                "descripcion": perfil.descripcion,
-                "telefono": perfil.telefono,
-                "correo": perfil.correo,
                 # Lista vacía si la abogada no ha agregado ramas
                 "ramas": RamaSerializer(usuaria.ramas.all(), many=True).data,
             }

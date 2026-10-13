@@ -287,14 +287,71 @@ ion-content {
   }
 }
 
-.btn-elegir {
-  --border-radius: 12px;
+.frase {
+  margin: 16px 0 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--ion-color-secondary);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ion-color-primary);
+}
+
+.datos-rapidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+
+  span {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    background: rgba(var(--ion-color-secondary-rgb), 0.13);
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+.resumen {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  color: #3d4352;
+
+  li {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  ion-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--ion-color-secondary);
+  }
+}
+
+/* Botones al final de la tarjeta */
+.botones-tarjeta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-top: auto;
   padding-top: 22px;
-  height: 70px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
+
+  ion-button {
+    --border-radius: 12px;
+    height: 46px;
+    margin: 0;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cargando {

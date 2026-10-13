@@ -25,7 +25,8 @@
   }
 }
 
-.despacho {
+.despacho,
+.trayectoria {
   margin-top: 16px;
 }
 
@@ -46,9 +47,16 @@
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 
+  &.tres {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   @media (max-width: 560px) {
-    grid-template-columns: 1fr;
-    gap: 0;
+    &,
+    &.tres {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
   }
 }
 

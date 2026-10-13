@@ -59,7 +59,9 @@ export class PerfilPagina {
   }
 
   guardarPerfil(): void {
-    this.api.patch<PerfilAbogada>('perfil/', this.perfil).subscribe({
+    // Si borran los años de experiencia, se guarda vacío (null) y no se muestra
+    const datos = { ...this.perfil, anios_experiencia: this.perfil.anios_experiencia || null };
+    this.api.patch<PerfilAbogada>('perfil/', datos).subscribe({
       next: (p) => {
         this.perfil = p;
         this.avisos.mostrar('Perfil guardado. Ya se ve en la página principal.');

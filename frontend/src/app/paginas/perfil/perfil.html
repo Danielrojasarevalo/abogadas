@@ -69,6 +69,39 @@
       </section>
     </div>
 
+    <!-- Trayectoria: se muestra en "Ver perfil completo" de la página pública -->
+    <section class="tarjeta bloque formulario trayectoria">
+      <h2>Mi trayectoria <span class="opcional">opcional</span></h2>
+      <p class="nota">
+        Todo lo que llenes aquí aparece en tu tarjeta de la sección “Nosotras” y en “Ver perfil completo”.
+        Lo que dejes vacío no se muestra. En formación, experiencia y logros escribe <b>uno por línea</b>.
+      </p>
+
+      <ion-input label="Frase o lema personal" labelPlacement="floating" fill="outline"
+        placeholder="Ej: Cada caso es una persona, no un expediente." [(ngModel)]="perfil.frase" />
+      <div class="fila tres">
+        <ion-input label="Años de experiencia" labelPlacement="floating" fill="outline" type="number" min="0"
+          [(ngModel)]="perfil.anios_experiencia" />
+        <ion-input label="Tarjeta profesional N.º" labelPlacement="floating" fill="outline"
+          [(ngModel)]="perfil.tarjeta_profesional" />
+        <ion-input label="Idiomas" labelPlacement="floating" fill="outline" placeholder="Español, inglés"
+          [(ngModel)]="perfil.idiomas" />
+      </div>
+      <ion-input label="Modalidad de atención" labelPlacement="floating" fill="outline"
+        placeholder="Ej: Presencial y virtual" [(ngModel)]="perfil.atencion" />
+
+      <div class="fila">
+        <ion-textarea label="Formación académica" labelPlacement="floating" fill="outline" [autoGrow]="true" rows="4"
+          placeholder="Abogada – Universidad ...&#10;Especialización en ..." [(ngModel)]="perfil.formacion" />
+        <ion-textarea label="Experiencia profesional" labelPlacement="floating" fill="outline" [autoGrow]="true"
+          rows="4" placeholder="Asesora en ...&#10;Litigante en ..." [(ngModel)]="perfil.experiencia" />
+      </div>
+      <ion-textarea label="Logros o reconocimientos" labelPlacement="floating" fill="outline" [autoGrow]="true"
+        rows="3" [(ngModel)]="perfil.logros" />
+
+      <ion-button (click)="guardarPerfil()">Guardar trayectoria</ion-button>
+    </section>
+
     <!-- Despacho -->
     <section class="tarjeta bloque formulario despacho">
       <h2>Información del despacho</h2>

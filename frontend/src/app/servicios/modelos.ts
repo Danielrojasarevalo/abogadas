@@ -90,6 +90,15 @@ export interface PerfilAbogada {
   descripcion: string;
   telefono: string;
   correo: string;
+  // Trayectoria (opcional)
+  frase?: string;
+  anios_experiencia?: number | null;
+  tarjeta_profesional?: string;
+  formacion?: string; // una por línea
+  experiencia?: string; // una por línea
+  logros?: string; // uno por línea
+  idiomas?: string;
+  atencion?: string;
 }
 
 /** Presentación general del despacho */

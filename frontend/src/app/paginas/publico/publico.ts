@@ -1,13 +1,14 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonIcon, IonSpinner, ModalController } from '@ionic/angular/standalone';
 
 import { SolicitudForm } from '../../formularios/solicitud-form';
 import { ApiService } from '../../servicios/api.service';
-import { Presentacion } from '../../servicios/modelos';
+import { AbogadaPublica, Presentacion } from '../../servicios/modelos';
 import { SesionService } from '../../servicios/sesion.service';
 import { VentanasService } from '../../servicios/ventanas.service';
 import { Cabecera } from '../../sitio/cabecera';
+import { PerfilCompleto } from '../../sitio/perfil-completo';
 import { Pie } from '../../sitio/pie';
 
 /**
@@ -26,6 +27,7 @@ import { Pie } from '../../sitio/pie';
 export class PublicoPagina {
   private api = inject(ApiService);
   private ventanas = inject(VentanasService);
+  private modal = inject(ModalController);
   readonly sesion = inject(SesionService);
 
   private contenido = viewChild.required(IonContent);
@@ -70,6 +72,26 @@ export class PublicoPagina {
     const datos = this.datos();
     if (!datos) return;
     this.ventanas.abrir(SolicitudForm, { abogadas: datos.abogadas, abogadaId });
+  }
+
+  /** Abre la ventana con todo el perfil de la abogada */
+  async verPerfil(abogada: AbogadaPublica): Promise<void> {
+    const ventana = await this.modal.create({
+      component: PerfilCompleto,
+      componentProps: { abogada },
+      cssClass: 'ventana-formulario',
+    });
+    await ventana.present();
+    const { role } = await ventana.onDidDismiss();
+    // Si desde el perfil pulsó "Consultar", abrimos la solicitud con ella elegida
+    if (role === 'consultar') {
+      this.consultar(abogada.id);
+    }
+  }
+
+  /** Primeras líneas de un texto con varias líneas (para el resumen de la tarjeta) */
+  primeras(texto: string | undefined, cantidad: number): string[] {
+    return (texto ?? '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, cantidad);
   }
 
   /** Botón de la cabecera: a dónde lleva si ya hay sesión */

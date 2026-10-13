@@ -20,6 +20,8 @@ import { Logo } from '../paginas/logo';
           <strong>Elizabeth Imbachi &amp; Katherine Rojas</strong>
           <span class="sub">Abogadas</span>
           <p>{{ despacho()?.lema || 'Asesoría legal cercana, clara y comprometida.' }}</p>
+          <!-- Ubicación del despacho -->
+          <span class="ubicacion"><ion-icon name="location-outline" /> Huila, Colombia</span>
         </div>
 
         <div class="columna">
@@ -54,7 +56,7 @@ import { Logo } from '../paginas/logo';
       </div>
 
       <div class="legal">
-        © {{ anio }} Elizabeth Imbachi &amp; Katherine Rojas · Abogadas. Todos los derechos reservados.
+        © {{ anio }} Elizabeth Imbachi &amp; Katherine Rojas · Abogadas · Huila, Colombia. Todos los derechos reservados.
       </div>
     </footer>
   `,
@@ -99,6 +101,20 @@ import { Logo } from '../paginas/logo';
         margin: 12px 0 0;
         font-size: 14px;
         line-height: 1.6;
+      }
+
+      .ubicacion {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+
+        ion-icon {
+          color: var(--ion-color-secondary-tint);
+        }
       }
     }
 

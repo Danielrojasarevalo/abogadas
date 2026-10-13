@@ -1,0 +1,10 @@
+<!-- Icono de la pestaña: balanza de la justicia (dorado sobre azul marino) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1f2a44"/>
+  <g fill="none" stroke="#c9a46c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 13v36M23 49h18M15 20h34"/>
+    <path d="M15 20l-6 13h12zM9 33a6 3 0 0 0 12 0"/>
+    <path d="M49 20l-6 13h12zM43 33a6 3 0 0 0 12 0"/>
+  </g>
+  <circle cx="32" cy="13" r="2.6" fill="#c9a46c"/>
+</svg>

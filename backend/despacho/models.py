@@ -163,6 +163,16 @@ class PerfilAbogada(models.Model):
     descripcion = models.TextField("Presentación", blank=True)
     telefono = models.CharField(max_length=20, blank=True)
     correo = models.EmailField(blank=True)
+    # Trayectoria (todo opcional: en la página pública solo se muestra lo que esté lleno)
+    frase = models.CharField("Frase o lema personal", max_length=200, blank=True)
+    anios_experiencia = models.PositiveSmallIntegerField("Años de experiencia", null=True, blank=True)
+    tarjeta_profesional = models.CharField("Tarjeta profesional", max_length=40, blank=True)
+    # Una línea por cada estudio / experiencia / logro
+    formacion = models.TextField("Formación académica (una por línea)", blank=True)
+    experiencia = models.TextField("Experiencia profesional (una por línea)", blank=True)
+    logros = models.TextField("Logros o reconocimientos (uno por línea)", blank=True)
+    idiomas = models.CharField(max_length=120, blank=True)
+    atencion = models.CharField("Modalidad de atención", max_length=120, blank=True)
 
     class Meta:
         verbose_name = "perfil de abogada"

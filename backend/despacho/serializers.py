@@ -64,7 +64,11 @@ class PerfilAbogadaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PerfilAbogada
-        fields = ["nombre", "titulo", "descripcion", "telefono", "correo"]
+        fields = [
+            "nombre", "titulo", "descripcion", "telefono", "correo",
+            "frase", "anios_experiencia", "tarjeta_profesional",
+            "formacion", "experiencia", "logros", "idiomas", "atencion",
+        ]
 
 
 class InfoDespachoSerializer(serializers.ModelSerializer):
