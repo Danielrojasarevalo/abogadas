@@ -52,6 +52,7 @@ export class MarcoPagina {
     { titulo: 'Casos', ruta: '/panel/casos', icono: 'briefcase-outline' },
     { titulo: 'Agenda', ruta: '/panel/agenda', icono: 'calendar-outline' },
     { titulo: 'Solicitudes', ruta: '/panel/solicitudes', icono: 'mail-outline' },
+    { titulo: 'Protección de datos', ruta: '/panel/datos', icono: 'shield-checkmark-outline' },
     { titulo: 'Mi perfil', ruta: '/panel/perfil', icono: 'person-outline' },
   ];
 

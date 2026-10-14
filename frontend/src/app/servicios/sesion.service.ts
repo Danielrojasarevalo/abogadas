@@ -76,7 +76,7 @@ export class SesionService {
   }
 
   /** Crea una cuenta de cliente y deja la sesión abierta */
-  registrarse(datos: Record<string, string>): Observable<{ token: string; usuaria: Usuaria }> {
+  registrarse(datos: Record<string, unknown>): Observable<{ token: string; usuaria: Usuaria }> {
     return this.http
       .post<{ token: string; usuaria: Usuaria }>(`${API_URL}/cuentas/registro/`, datos)
       .pipe(tap((respuesta) => this.guardar(respuesta.token, respuesta.usuaria)));

@@ -99,6 +99,11 @@
           </section>
 
           <section class="tarjeta bloque">
+            <h2>Documentos</h2>
+            <app-documentos modo="abogada" [casoId]="caso.id!" [documentos]="documentos()" (cambio)="cargarDocumentos()" />
+          </section>
+
+          <section class="tarjeta bloque">
             <div class="titulo-bloque">
               <h2>Citas</h2>
               <ion-button fill="clear" size="small" (click)="nuevaCita()">
@@ -111,6 +116,9 @@
                 <div>
                   <strong>{{ cita.titulo }}</strong>
                   <span>{{ cita.fecha_hora | date: "d MMM y, h:mm a" }}</span>
+                  @if (cita.lugar) {
+                    <span><ion-icon name="location-outline" /> {{ cita.lugar }}</span>
+                  }
                 </div>
               </button>
             } @empty {

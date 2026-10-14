@@ -19,6 +19,7 @@ import { ApiService } from '../../servicios/api.service';
 import { AvisosService } from '../../servicios/avisos.service';
 import { Solicitud } from '../../servicios/modelos';
 import { VentanasService } from '../../servicios/ventanas.service';
+import { Ubicacion } from '../../sitio/ubicacion';
 
 /**
  * Solicitudes de consulta que llegan desde la página pública.
@@ -87,6 +88,9 @@ export class SolicitudesPagina {
   async registrarCliente(solicitud: Solicitud): Promise<void> {
     const cliente = {
       nombre: solicitud.nombre,
+      tipo_documento: solicitud.tipo_documento,
+      numero_documento: solicitud.numero_documento,
+      direccion: solicitud.ciudad,
       telefono: solicitud.telefono,
       correo: solicitud.correo,
       notas: solicitud.mensaje,
@@ -94,6 +98,16 @@ export class SolicitudesPagina {
     if (await this.ventanas.abrir(ClienteForm, { datosIniciales: cliente })) {
       this.marcar(solicitud, true);
     }
+  }
+
+  /** Mapa con el lugar desde donde el visitante envió la consulta */
+  verUbicacion(s: Solicitud): void {
+    this.ventanas.abrir(Ubicacion, {
+      titulo: `Consulta de ${s.nombre}`,
+      lugar: `${s.latitud},${s.longitud}`,
+      fechaHora: s.creado ?? '',
+      nota: s.precision_m ? `Ubicación enviada desde su celular o computador (precisión aprox. ${s.precision_m} m).` : '',
+    });
   }
 
   async borrar(solicitud: Solicitud): Promise<void> {

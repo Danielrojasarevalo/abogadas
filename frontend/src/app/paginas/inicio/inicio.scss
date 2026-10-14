@@ -198,3 +198,9 @@
     color: var(--ion-color-secondary-shade);
   }
 }
+
+/* El manual es un enlace, no un botón: sin subrayado */
+a.acceso {
+  box-sizing: border-box;
+  text-decoration: none;
+}

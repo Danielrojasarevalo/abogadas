@@ -33,6 +33,14 @@
                   · {{ s.rama }}
                 }
               </span>
+              @if (s.numero_documento) {
+                <span class="identificacion">
+                  <ion-icon name="card-outline" /> {{ s.tipo_documento }} {{ s.numero_documento }}
+                  @if (s.ciudad) {
+                    · <ion-icon name="business-outline" /> {{ s.ciudad }}
+                  }
+                </span>
+              }
             </div>
             <span class="estado" [class.nueva]="!s.atendida">{{ s.atendida ? 'Atendida' : 'Nueva' }}</span>
           </div>
@@ -43,6 +51,11 @@
             <a [href]="'tel:' + s.telefono"><ion-icon name="call-outline" /> {{ s.telefono }}</a>
             @if (s.correo) {
               <a [href]="'mailto:' + s.correo"><ion-icon name="mail-outline" /> {{ s.correo }}</a>
+            }
+            @if (s.latitud && s.longitud) {
+              <button type="button" class="ver-ubicacion" (click)="verUbicacion(s)">
+                <ion-icon name="location-outline" /> Ver ubicación
+              </button>
             }
           </div>
 

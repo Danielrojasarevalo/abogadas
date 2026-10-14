@@ -5,12 +5,15 @@ API pública: lo que se ve ANTES de iniciar sesión.
 """
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
+from .datos import registrar_autorizacion
+from .identificacion import limpiar_documento
 from .models import InfoDespacho, PerfilAbogada, Solicitud
 from .serializers import InfoDespachoSerializer, PerfilAbogadaSerializer, RamaSerializer
 
@@ -48,10 +51,42 @@ def presentacion(request):
 
 
 class NuevaSolicitudSerializer(serializers.ModelSerializer):
+    # Autorización expresa para datos sensibles (opcional)
+    datos_sensibles = serializers.BooleanField(default=False, write_only=True)
+
     class Meta:
         model = Solicitud
-        fields = ["nombre", "telefono", "correo", "mensaje", "abogada", "rama"]
-        extra_kwargs = {"abogada": {"required": True, "allow_null": False}}
+        fields = [
+            "nombre", "tipo_documento", "numero_documento", "ciudad", "telefono", "correo", "mensaje",
+            "abogada", "rama", "acepta_datos", "datos_sensibles", "latitud", "longitud", "precision_m",
+        ]
+        extra_kwargs = {
+            "abogada": {"required": True, "allow_null": False},
+            "acepta_datos": {"required": True},
+            "tipo_documento": {"required": True},
+            "numero_documento": {"required": True, "allow_blank": False},
+            "ciudad": {"required": True, "allow_blank": False},
+        }
+
+    def validate(self, datos):
+        # Documento según su tipo (cédula solo números, NIT con dígito de verificación, etc.)
+        numero, error = limpiar_documento(datos.get("tipo_documento"), datos.get("numero_documento"))
+        if error:
+            raise serializers.ValidationError({"numero_documento": error})
+        datos["numero_documento"] = numero
+        # La ubicación es opcional, pero si llega debe venir completa y con valores posibles
+        lat, lon = datos.get("latitud"), datos.get("longitud")
+        if (lat is None) != (lon is None):
+            raise serializers.ValidationError("La ubicación está incompleta.")
+        if lat is not None and not (-90 <= lat <= 90 and -180 <= lon <= 180):
+            raise serializers.ValidationError("La ubicación no es válida.")
+        return datos
+
+    def validate_acepta_datos(self, acepta):
+        # Ley 1581 de 2012: sin autorización previa no se pueden guardar los datos
+        if not acepta:
+            raise serializers.ValidationError("Debes autorizar el tratamiento de tus datos para enviar la consulta.")
+        return acepta
 
     def validate_abogada(self, abogada):
         # Solo se puede elegir a una de las abogadas del despacho
@@ -72,5 +107,12 @@ class LimiteSolicitudes(AnonRateThrottle):
 def enviar_solicitud(request):
     serializer = NuevaSolicitudSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
+    sensibles = serializer.validated_data.pop("datos_sensibles")
+    with transaction.atomic():
+        solicitud = serializer.save()
+        # Prueba de la autorización: solo la ve la abogada elegida
+        registrar_autorizacion(
+            request, abogada=solicitud.abogada, nombre=solicitud.nombre, origen="solicitud",
+            datos_sensibles=sensibles, solicitud=solicitud,
+        )
     return Response({"detail": "Solicitud enviada."}, status=status.HTTP_201_CREATED)

@@ -23,6 +23,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
+from despacho.datos import abogada_valida, registrar_autorizacion
+from despacho.identificacion import limpiar_documento
 from despacho.models import Cliente
 
 from .models import CodigoRecuperacion
@@ -53,6 +55,17 @@ def crear_cuenta(request):
 
     if not nombre or not documento or not correo:
         return error("Nombre, número de documento y correo son obligatorios.")
+    # Documento según su tipo (ej: 1.075.123.456 -> 1075123456)
+    documento, error_documento = limpiar_documento(tipo, documento)
+    if error_documento:
+        return error(error_documento)
+
+    # Ley 1581 de 2012: autorización previa, expresa e informada, dirigida a una abogada
+    if datos.get("acepta_datos") is not True:
+        return error("Debes aceptar la política de tratamiento de datos para crear tu cuenta.")
+    abogada = abogada_valida(datos.get("abogada"))
+    if abogada is None:
+        return error("Elige la abogada a la que autorizas el tratamiento de tus datos.")
 
     Usuario = get_user_model()
     nombre_usuario = documento.lower()
@@ -80,6 +93,10 @@ def crear_cuenta(request):
             )
         cliente.usuario = usuario
         cliente.save(update_fields=["usuario"])
+        registrar_autorizacion(
+            request, abogada=abogada, nombre=cliente.nombre, origen="registro",
+            datos_sensibles=datos.get("datos_sensibles") is True, cliente=cliente,
+        )
 
     # Entra directamente después de crear la cuenta
     token, _ = Token.objects.get_or_create(user=usuario)

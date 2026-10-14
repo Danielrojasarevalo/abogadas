@@ -143,3 +143,15 @@ ion-split-pane {
     border-color: var(--ion-color-secondary);
   }
 }
+
+/* Enlace al manual: dorado para que se distinga */
+.ver-sitio.manual {
+  border-style: solid;
+  border-color: rgba(var(--ion-color-secondary-rgb), 0.45);
+  color: var(--ion-color-secondary-tint);
+
+  &:hover {
+    color: #fff;
+    background: rgba(var(--ion-color-secondary-rgb), 0.15);
+  }
+}

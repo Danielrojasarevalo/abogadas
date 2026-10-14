@@ -1,7 +1,7 @@
-<ion-content>
+<ion-content [scrollEvents]="true" (ionScroll)="alDesplazar($event)">
   <div #pagina>
-    <!-- ===== Header fijo ===== -->
-    <div class="barra">
+    <!-- ===== Header fijo (toma sombra al bajar) ===== -->
+    <div class="barra" [class.desplazada]="desplazada()">
       <app-cabecera [enlaces]="true" (ir)="irA($event)">
         <ion-button fill="clear" class="btn-cuenta" [routerLink]="rutaCuenta()">
           <ion-icon slot="start" name="person-outline" />
@@ -13,8 +13,17 @@
 
     <!-- ===== Portada ===== -->
     <section class="portada">
+      <!-- Brillos dorados que se mueven lentamente (decoración) -->
+      <span class="brillo brillo-1" aria-hidden="true"></span>
+      <span class="brillo brillo-2" aria-hidden="true"></span>
+      <span class="brillo brillo-3" aria-hidden="true"></span>
+      <svg class="balanza-fondo" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 6v48M18 54h28M12 16h40M32 10l-4 6h8zM12 16l-8 18h16zM52 16l-8 18h16zM4 34a8 4 0 0 0 16 0M44 34a8 4 0 0 0 16 0"
+          fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+
       <div class="portada-contenido">
-        <span class="sobre">Despacho de abogadas</span>
+        <span class="sobre">Despacho de abogadas · Huila</span>
         <h1>{{ datos()?.despacho?.lema || 'Asesoría legal cercana, clara y comprometida.' }}</h1>
         <p>
           {{
@@ -26,17 +35,33 @@
           <ion-button class="btn-dorado" size="large" (click)="consultar()">Agenda tu consulta</ion-button>
           <ion-button fill="outline" class="btn-claro" size="large" (click)="irA('nosotras')">Conócenos</ion-button>
         </div>
+        <!-- Lo que ofrece el despacho -->
+        <ul class="insignias">
+          <li><ion-icon name="shield-checkmark-outline" /> Confidencialidad y secreto profesional</li>
+          <li><ion-icon name="eye-outline" /> Sigue tu caso en línea</li>
+          <li><ion-icon name="logo-whatsapp" /> Atención por WhatsApp</li>
+        </ul>
       </div>
+
+      <button type="button" class="bajar" aria-label="Ver cómo funciona" (click)="irA('como-funciona')">
+        <ion-icon name="chevron-down-outline" />
+      </button>
+      <!-- Curva de transición hacia la siguiente sección -->
+      <svg class="curva" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 0 480 0 720 30s480 50 720 10v40z" fill="#fbfaf7" />
+      </svg>
     </section>
 
     <!-- ===== Mini espacio: cómo funciona ===== -->
     <section id="como-funciona" class="seccion">
       <div class="contenedor-sitio">
-        <span class="sobre">Así de fácil</span>
-        <h2>Cómo funciona</h2>
+        <div appAparecer>
+          <span class="sobre">Así de fácil</span>
+          <h2>Cómo funciona</h2>
+        </div>
         <div class="pasos">
           @for (paso of pasos; track paso.titulo; let i = $index) {
-            <article class="paso">
+            <article class="paso" appAparecer [retraso]="i * 150">
               <span class="numero">{{ i + 1 }}</span>
               <ion-icon [name]="paso.icono" />
               <h3>{{ paso.titulo }}</h3>
@@ -50,19 +75,24 @@
     <!-- ===== Las abogadas ===== -->
     <section id="nosotras" class="seccion fondo-claro">
       <div class="contenedor-sitio">
-        <span class="sobre">Nuestro equipo</span>
-        <h2>Elige a tu abogada</h2>
-        <p class="intro">Dos profesionales comprometidas con tu caso. Escoge con quién quieres hablar.</p>
+        <div appAparecer>
+          <span class="sobre">Nuestro equipo</span>
+          <h2>Elige a tu abogada</h2>
+          <p class="intro">Dos profesionales comprometidas con tu caso. Escoge con quién quieres hablar.</p>
+        </div>
 
         @if (datos(); as d) {
           <div class="abogadas">
-            @for (a of d.abogadas; track a.id) {
-              <article class="abogada">
+            @for (a of d.abogadas; track a.id; let i = $index) {
+              <article class="abogada" appAparecer [retraso]="i * 180">
                 <div class="cabeza">
                   <span class="monograma">{{ iniciales(a.nombre) }}</span>
                   <div>
                     <h3>{{ a.nombre }}</h3>
                     <span class="titulo">{{ a.titulo }}</span>
+                    @if (a.ciudad) {
+                      <span class="ciudad"><ion-icon name="location-outline" /> {{ a.ciudad }}</span>
+                    }
                   </div>
                 </div>
 
@@ -110,9 +140,12 @@
                   </div>
                 }
 
-                @if (a.telefono || a.correo) {
+                @if (a.telefono || a.correo || a.whatsapp) {
                   <div class="contacto">
-                    @if (a.telefono) {
+                    @if (a.whatsapp) {
+                      <span><ion-icon name="logo-whatsapp" /> {{ a.whatsapp }}</span>
+                    }
+                    @if (a.telefono && a.telefono !== a.whatsapp) {
                       <span><ion-icon name="call-outline" /> {{ a.telefono }}</span>
                     }
                     @if (a.correo) {
@@ -126,6 +159,11 @@
                   <ion-button class="btn-elegir" (click)="consultar(a.id)">
                     Consultar con {{ a.nombre.split(' ')[0] }}
                   </ion-button>
+                  @if (a.whatsapp) {
+                    <ion-button class="btn-whatsapp" [href]="whatsapp(a)" target="_blank" rel="noopener">
+                      <ion-icon slot="start" name="logo-whatsapp" /> Escribir por WhatsApp
+                    </ion-button>
+                  }
                 </div>
               </article>
             }
@@ -141,7 +179,7 @@
     <!-- ===== Contacto / llamada final ===== -->
     <section id="contacto" class="seccion">
       <div class="contenedor-sitio">
-        <div class="llamada">
+        <div class="llamada" appAparecer>
           <div>
             <h2>¿Tienes una situación legal?</h2>
             <p>Escríbenos y la abogada que elijas te contactará. Si ya eres cliente, entra para ver tu proceso y tus citas.</p>
@@ -155,6 +193,6 @@
     </section>
 
     <!-- ===== Footer ===== -->
-    <app-pie [despacho]="datos()?.despacho ?? null" />
+    <app-pie [despacho]="datos()?.despacho ?? null" [abogadas]="datos()?.abogadas ?? []" />
   </div>
 </ion-content>

@@ -262,3 +262,42 @@ ion-select {
     padding: 28px 20px;
   }
 }
+
+/* Casillas de autorización de datos (crear cuenta) */
+.casilla {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--despacho-suave);
+
+  ion-checkbox {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  a {
+    font-weight: 600;
+    color: var(--ion-color-secondary-shade);
+  }
+}
+
+/* Entrada suave de la marca y de la tarjeta */
+.marca-contenido > * {
+  animation: subir-entrada 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.marca-contenido > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+.marca-contenido > :nth-child(3) {
+  animation-delay: 0.2s;
+}
+.marca-contenido > :nth-child(n + 4) {
+  animation-delay: 0.35s;
+}
+
+.caja {
+  animation: subir-entrada 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
+}

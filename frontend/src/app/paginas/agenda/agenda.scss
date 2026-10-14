@@ -73,7 +73,47 @@
       color: var(--despacho-suave);
     }
 
-    .hora {
+    .lugar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-wrap: anywhere;
+
+  ion-icon {
+    flex-shrink: 0;
+    color: var(--ion-color-secondary);
+  }
+}
+
+/* Botón para ver la ubicación de la cita en el mapa */
+.ver-mapa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-right: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--despacho-borde);
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-secondary);
+  }
+
+  &:hover {
+    border-color: var(--ion-color-secondary);
+  }
+}
+
+.hora {
       opacity: 0.5;
     }
   }

@@ -3,22 +3,27 @@ Vistas de la API del despacho.
 Todas exigen haber iniciado sesión como administradora (ver settings.py).
 """
 
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import ProtectedError, Q
+from django.http import FileResponse, Http404
 from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 
-from .models import Actuacion, Caso, Cita, Cliente, InfoDespacho, PerfilAbogada, Rama, Solicitud
+from .models import Actuacion, Caso, Cita, Cliente, Documento, InfoDespacho, PerfilAbogada, Rama, Solicitud
 from .serializers import (
     ActuacionSerializer,
     CasoSerializer,
     CitaSerializer,
     ClienteSerializer,
+    DocumentoSerializer,
     InfoDespachoSerializer,
     PerfilAbogadaSerializer,
     RamaSerializer,
@@ -156,6 +161,44 @@ class CitaViewSet(viewsets.ModelViewSet):
         return consulta
 
 
+def descargar_archivo(documento):
+    """Entrega el archivo de un documento para descargarlo o verlo en el navegador."""
+    try:
+        archivo = documento.archivo.open("rb")
+    except FileNotFoundError:
+        raise Http404("El archivo ya no existe en el servidor.")
+    # El nombre con el que se descarga siempre lleva su extensión (.pdf, .docx...)
+    nombre = documento.nombre
+    if not nombre.lower().endswith(f".{documento.extension}"):
+        nombre = f"{nombre}.{documento.extension}"
+    return FileResponse(archivo, as_attachment=True, filename=nombre)
+
+
+class DocumentoViewSet(viewsets.ModelViewSet):
+    """
+    Documentos PDF y Word de los casos. Filtro: ?caso=5
+    Para subir uno se envía un formulario (multipart) con caso, nombre y archivo.
+    """
+
+    serializer_class = DocumentoSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    http_method_names = ["get", "post", "patch", "delete"]
+
+    def get_queryset(self):
+        consulta = Documento.objects.select_related("subido_por")
+        caso = self.request.query_params.get("caso")
+        if caso:
+            consulta = consulta.filter(caso_id=caso)
+        return consulta
+
+    def perform_create(self, serializer):
+        serializer.save(subido_por=self.request.user, subido_por_cliente=False)
+
+    @action(detail=True, methods=["get"])
+    def descargar(self, request, pk=None):
+        return descargar_archivo(self.get_object())
+
+
 @api_view(["GET"])
 def resumen(request):
     """Números y próximas citas para la pantalla de inicio."""
@@ -173,6 +216,10 @@ def resumen(request):
             ).count(),
             "proximas_citas": CitaSerializer(proximas, many=True).data,
             "solicitudes_nuevas": Solicitud.objects.filter(atendida=False).count(),
+            # Documentos que subieron los clientes en la última semana
+            "documentos_clientes": Documento.objects.filter(
+                subido_por_cliente=True, creado__gte=ahora - timedelta(days=7)
+            ).count(),
         }
     )
 
@@ -211,7 +258,12 @@ def info_despacho(request):
     if request.method == "PATCH":
         serializer = InfoDespachoSerializer(info, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        cambio_politica = any(
+            campo in serializer.validated_data and serializer.validated_data[campo] != getattr(info, campo)
+            for campo in InfoDespacho.CAMPOS_POLITICA
+        )
+        # Si cambia la política, queda como una versión nueva (las autorizaciones guardan cuál aceptaron)
+        serializer.save(**({"politica_actualizada": timezone.now()} if cambio_politica else {}))
     return Response(InfoDespachoSerializer(info).data)
 
 

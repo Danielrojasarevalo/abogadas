@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   IonButton,
+  IonCheckbox,
   IonContent,
   IonIcon,
   IonInput,
@@ -13,7 +14,7 @@ import {
 
 import { ApiService } from '../../servicios/api.service';
 import { AvisosService } from '../../servicios/avisos.service';
-import { TIPOS_DOCUMENTO, Usuaria } from '../../servicios/modelos';
+import { Presentacion, TIPOS_DOCUMENTO, Usuaria } from '../../servicios/modelos';
 import { SesionService } from '../../servicios/sesion.service';
 import { Logo } from '../logo';
 
@@ -36,6 +37,7 @@ type Modo = 'entrar' | 'crear' | 'recuperar' | 'codigo';
     IonSelect,
     IonSelectOption,
     IonButton,
+    IonCheckbox,
     IonIcon,
     IonSpinner,
     Logo,
@@ -70,7 +72,14 @@ export class LoginPagina {
     telefono: '',
     password: '',
     confirmar: '',
+    // Autorización de datos (Ley 1581 de 2012), dirigida a una abogada
+    abogada: null as number | null,
+    acepta_datos: false,
+    datos_sensibles: false,
   };
+
+  /** Abogadas para elegir a quién se autoriza el tratamiento de datos */
+  abogadas = signal<{ id: number; nombre: string }[]>([]);
 
   // Recuperar contraseña
   codigo = '';
@@ -82,6 +91,7 @@ export class LoginPagina {
     if (modo === 'crear' || modo === 'recuperar') {
       this.modo.set(modo);
     }
+    this.api.get<Presentacion>('publico/').subscribe((r) => this.abogadas.set(r.abogadas));
   }
 
   cambiarModo(modo: Modo): void {
@@ -112,6 +122,14 @@ export class LoginPagina {
     const datos = this.nueva;
     if (!datos.nombre.trim() || !datos.numero_documento.trim() || !datos.correo.trim()) {
       this.error.set('Nombre, documento y correo son obligatorios.');
+      return;
+    }
+    if (!datos.abogada) {
+      this.error.set('Elige tu abogada.');
+      return;
+    }
+    if (!datos.acepta_datos) {
+      this.error.set('Debes aceptar la política de tratamiento de datos.');
       return;
     }
     if (datos.password !== datos.confirmar) {

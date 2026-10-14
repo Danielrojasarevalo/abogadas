@@ -59,6 +59,18 @@
       </a>
     }
 
+    <!-- Aviso de documentos que subieron los clientes desde su portal -->
+    @if (resumen()?.documentos_clientes) {
+      <a class="aviso-solicitudes tarjeta tarjeta-clic" routerLink="/panel/casos">
+        <ion-icon name="document-attach-outline" />
+        <span>
+          Tus clientes subieron <strong>{{ resumen()?.documentos_clientes }}</strong>
+          {{ resumen()?.documentos_clientes === 1 ? 'documento' : 'documentos' }} esta semana. Míralos en la ficha de cada caso.
+        </span>
+        <span class="ver">Ver →</span>
+      </a>
+    }
+
     <div class="columnas">
       <!-- Próximas citas -->
       <section class="tarjeta bloque">
@@ -82,6 +94,9 @@
                   · {{ cita.cliente_nombre }}
                 }
               </span>
+              @if (cita.lugar || cita.cliente_direccion) {
+                <span><ion-icon name="location-outline" /> {{ cita.lugar || cita.cliente_direccion }}</span>
+              }
             </div>
           </button>
         } @empty {
@@ -104,6 +119,9 @@
         <button type="button" class="acceso" (click)="nuevaCita()">
           <ion-icon name="calendar-outline" /> Agendar cita
         </button>
+        <a class="acceso" href="/manual-usuario.pdf" target="_blank" rel="noopener">
+          <ion-icon name="book-outline" /> Manual de usuario (PDF)
+        </a>
       </section>
     </div>
   </div>

@@ -10,3 +10,6 @@ __pycache__/
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+
+# Documentos subidos por las abogadas y los clientes
+backend/media/

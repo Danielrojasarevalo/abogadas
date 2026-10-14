@@ -276,6 +276,49 @@ ion-content {
     text-decoration: none;
     background: rgba(var(--ion-color-secondary-rgb), 0.14);
     color: var(--ion-color-secondary-shade);
+
+    &.whatsapp {
+      background: #25d366;
+      color: #fff;
+    }
+  }
+}
+
+.ayuda-docs {
+  margin: -4px 0 12px;
+  font-size: 13px;
+  color: var(--despacho-suave);
+}
+
+/* Botón para ver el lugar de la cita en el mapa */
+.btn-mapa {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--despacho-borde);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  cursor: pointer;
+
+  ion-icon {
+    color: var(--ion-color-secondary);
+  }
+
+  &.claro {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+
+    ion-icon {
+      color: var(--ion-color-secondary-tint);
+    }
   }
 }
 
@@ -370,5 +413,37 @@ ion-content {
   ion-icon {
     font-size: 44px;
     color: var(--ion-color-secondary);
+  }
+}
+
+/* Protección de datos (debajo de "Tus datos") */
+.seccion-datos {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--despacho-borde);
+}
+
+/* Entrada en cascada de la bienvenida y las tarjetas */
+.bienvenida,
+.principal > .tarjeta,
+.lateral {
+  animation: subir-entrada 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.principal > .tarjeta:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.principal > .tarjeta:nth-child(n + 2) {
+  animation-delay: 0.2s;
+}
+.lateral {
+  animation-delay: 0.15s;
+}
+
+/* Las tarjetas se levantan un poco al pasar el mouse */
+.principal > .tarjeta {
+  transition: box-shadow 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 16px 36px rgba(31, 42, 68, 0.1);
   }
 }

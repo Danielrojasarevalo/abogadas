@@ -234,8 +234,15 @@ ion-buttons[slot='end'] ion-button {
   }
 
   span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 13px;
     color: var(--despacho-suave);
+
+    ion-icon {
+      font-size: 14px;
+    }
   }
 
   &.hecha {

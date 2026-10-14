@@ -22,12 +22,17 @@
         <ion-textarea label="Cuéntale a tus clientes quién eres" labelPlacement="floating" fill="outline"
           [autoGrow]="true" rows="5" [(ngModel)]="perfil.descripcion" />
         <div class="fila">
-          <ion-input label="Teléfono / WhatsApp" labelPlacement="floating" fill="outline" type="tel"
+          <ion-input label="Teléfono" labelPlacement="floating" fill="outline" type="tel"
             [(ngModel)]="perfil.telefono" />
-          <ion-input label="Correo" labelPlacement="floating" fill="outline" type="email"
-            [(ngModel)]="perfil.correo" />
+          <ion-input label="WhatsApp (con +57)" labelPlacement="floating" fill="outline" type="tel"
+            placeholder="+57 300 0000000" [(ngModel)]="perfil.whatsapp" />
         </div>
-        <p class="nota">Ese correo también sirve para recuperar tu contraseña.</p>
+        <ion-input label="Correo" labelPlacement="floating" fill="outline" type="email"
+          [(ngModel)]="perfil.correo" />
+        <p class="nota">
+          A ese WhatsApp llegan las consultas que envían los visitantes desde la página.
+          El correo también sirve para recuperar tu contraseña.
+        </p>
         <ion-button (click)="guardarPerfil()">Guardar perfil</ion-button>
       </section>
 
@@ -87,8 +92,12 @@
         <ion-input label="Idiomas" labelPlacement="floating" fill="outline" placeholder="Español, inglés"
           [(ngModel)]="perfil.idiomas" />
       </div>
-      <ion-input label="Modalidad de atención" labelPlacement="floating" fill="outline"
-        placeholder="Ej: Presencial y virtual" [(ngModel)]="perfil.atencion" />
+      <div class="fila">
+        <ion-input label="Modalidad de atención" labelPlacement="floating" fill="outline"
+          placeholder="Ej: Presencial y virtual" [(ngModel)]="perfil.atencion" />
+        <ion-input label="Ciudad donde atiendes" labelPlacement="floating" fill="outline"
+          placeholder="Ej: Neiva, Huila" [(ngModel)]="perfil.ciudad" />
+      </div>
 
       <div class="fila">
         <ion-textarea label="Formación académica" labelPlacement="floating" fill="outline" [autoGrow]="true" rows="4"
@@ -119,6 +128,67 @@
           placeholder="Lunes a viernes, 8:00 a.m. – 5:00 p.m." [(ngModel)]="despacho.horario" />
       </div>
       <ion-button (click)="guardarDespacho()">Guardar información</ion-button>
+    </section>
+
+    <!-- Protección de datos: con esto se arma la política que ven clientes y visitantes -->
+    <section class="tarjeta bloque formulario despacho">
+      <h2>Protección de datos y aviso legal</h2>
+      <p class="nota">
+        Con estos datos se arma automáticamente la
+        <a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos y los Términos</a>
+        (Ley 1581 de 2012 y Decreto 1377 de 2013). Los campos con * los exige la ley.
+        Teléfono y dirección se toman de “Información del despacho”.
+      </p>
+      @if (faltantes().length) {
+        <p class="pendientes">
+          <ion-icon name="warning-outline" />
+          <span>Falta llenar: {{ faltantes().join(', ') }}.</span>
+        </p>
+      } @else {
+        <p class="completa"><ion-icon name="shield-checkmark-outline" /> La política tiene todos los datos que exige la ley.</p>
+      }
+
+      <h3>Responsable del tratamiento</h3>
+      <div class="fila">
+        <ion-input label="Nombre(s) del responsable *" labelPlacement="floating" fill="outline"
+          placeholder="Elizabeth Imbachi y Katherine Rojas" [(ngModel)]="despacho.responsable_nombre" />
+        <ion-input label="Identificación (C.C. / NIT) *" labelPlacement="floating" fill="outline"
+          placeholder="C.C. ... y C.C. ..." [(ngModel)]="despacho.responsable_identificacion" />
+      </div>
+      <div class="fila">
+        <ion-input label="Ciudad (domicilio) *" labelPlacement="floating" fill="outline" placeholder="Ej: Neiva, Huila"
+          [(ngModel)]="despacho.ciudad" />
+        <ion-input label="Fecha de entrada en vigencia *" labelPlacement="floating" fill="outline" type="date"
+          [(ngModel)]="despacho.vigencia_politica" />
+      </div>
+
+      <h3>Peticiones de los titulares</h3>
+      <div class="fila">
+        <ion-input label="Quién atiende las peticiones *" labelPlacement="floating" fill="outline"
+          placeholder="Ej: La abogada que el cliente autorizó" [(ngModel)]="despacho.area_peticiones" />
+        <ion-input label="Correo para peticiones de datos *" labelPlacement="floating" fill="outline" type="email"
+          placeholder="Si lo dejas vacío se usa el del despacho" [(ngModel)]="despacho.correo_datos" />
+      </div>
+
+      <h3>Uso y conservación</h3>
+      <ion-textarea label="Otras finalidades (una por línea, opcional)" labelPlacement="floating" fill="outline"
+        [autoGrow]="true" rows="2" [(ngModel)]="despacho.finalidades_adicionales" />
+      <div class="fila">
+        <ion-input label="Vigencia de la base de datos" labelPlacement="floating" fill="outline"
+          [(ngModel)]="despacho.vigencia_base_datos" />
+        <ion-input label="Meses que se guardan las solicitudes" labelPlacement="floating" fill="outline" type="number"
+          min="1" [(ngModel)]="despacho.meses_conservacion_solicitudes" />
+      </div>
+
+      <h3>Condiciones de la consulta</h3>
+      <div class="fila">
+        <ion-input label="Costo de la primera consulta" labelPlacement="floating" fill="outline"
+          placeholder="Ej: Gratuita (30 min) / $80.000" [(ngModel)]="despacho.costo_consulta" />
+        <ion-input label="Tiempo de respuesta" labelPlacement="floating" fill="outline"
+          placeholder="Ej: Máximo 2 días hábiles" [(ngModel)]="despacho.tiempo_respuesta" />
+      </div>
+      <p class="nota">Si cambias algo de la política, queda como versión nueva y se guarda cuál aceptó cada titular.</p>
+      <ion-button (click)="guardarDespacho()">Guardar protección de datos</ion-button>
     </section>
   </div>
 </ion-content>

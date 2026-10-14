@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { Resumen } from './modelos';
 
@@ -13,7 +13,16 @@ import { Resumen } from './modelos';
 export const API_URL = `${location.protocol}//${location.hostname}:8000/api`;
 
 /** Recursos (tablas) que expone la API */
-export type Recurso = 'clientes' | 'casos' | 'actuaciones' | 'citas' | 'ramas' | 'solicitudes';
+export type Recurso =
+  | 'clientes'
+  | 'casos'
+  | 'actuaciones'
+  | 'citas'
+  | 'ramas'
+  | 'solicitudes'
+  | 'documentos'
+  | 'peticiones-datos'
+  | 'autorizaciones';
 
 /**
  * Servicio genérico para hablar con la API: listar, crear, editar y borrar.
@@ -71,5 +80,18 @@ export class ApiService {
 
   delete<T>(ruta: string): Observable<T> {
     return this.http.delete<T>(`${API_URL}/${ruta}`);
+  }
+
+  /** Descarga un archivo (con el token de sesión) y lo guarda en el equipo */
+  descargar(ruta: string, nombre: string): Observable<void> {
+    return this.http.get(`${API_URL}/${ruta}`, { responseType: 'blob' }).pipe(
+      map((archivo) => {
+        const enlace = document.createElement('a');
+        enlace.href = URL.createObjectURL(archivo);
+        enlace.download = nombre;
+        enlace.click();
+        setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
+      }),
+    );
   }
 }

@@ -116,3 +116,41 @@
     }
   }
 }
+
+/* Protección de datos */
+.bloque h3 {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  color: var(--ion-color-primary);
+}
+
+.nota a {
+  font-weight: 600;
+  color: var(--ion-color-secondary-shade);
+}
+
+.pendientes,
+.completa {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  margin: 0 0 12px;
+  border-radius: 12px;
+  font-size: 14px;
+
+  ion-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+}
+
+.pendientes {
+  background: rgba(var(--ion-color-warning-rgb), 0.14);
+  color: var(--ion-color-warning-shade);
+}
+
+.completa {
+  background: rgba(var(--ion-color-success-rgb), 0.12);
+  color: var(--ion-color-success-shade);
+}

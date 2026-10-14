@@ -51,12 +51,18 @@
                     @if (cita.cliente_nombre) {
                       · {{ cita.cliente_nombre }}
                     }
-                    @if (cita.lugar) {
-                      · {{ cita.lugar }}
-                    }
                   </span>
+                  @if (ubicacion(cita); as lugar) {
+                    <span class="lugar"><ion-icon name="location-outline" /> {{ lugar }}</span>
+                  }
                 </span>
               </button>
+              @if (ubicacion(cita)) {
+                <button type="button" class="ver-mapa" title="Ver ubicación en el mapa" (click)="verUbicacion(cita)">
+                  <ion-icon name="map-outline" />
+                  <span>Mapa</span>
+                </button>
+              }
             </div>
           }
         </div>

@@ -97,6 +97,26 @@
               </div>
               <p class="nota">Mínimo 8 caracteres, que no sea solo números ni muy común.</p>
 
+              <!-- Autorización de datos (Ley 1581 de 2012): solo la ve la abogada que elijas -->
+              <ion-select name="abogada" label="Tu abogada *" labelPlacement="floating" fill="outline"
+                interface="popover" [(ngModel)]="nueva.abogada">
+                @for (a of abogadas(); track a.id) {
+                  <ion-select-option [value]="a.id">{{ a.nombre }}</ion-select-option>
+                }
+              </ion-select>
+              <label class="casilla">
+                <ion-checkbox name="acepta" [(ngModel)]="nueva.acepta_datos" />
+                <span>
+                  Autorizo a mi abogada el tratamiento de mis datos según la
+                  <a href="/privacidad#politica" target="_blank" rel="noopener">Política de Tratamiento de Datos</a>
+                  y acepto los <a href="/privacidad#terminos" target="_blank" rel="noopener">términos de uso</a>. *
+                </span>
+              </label>
+              <label class="casilla">
+                <ion-checkbox name="sensibles" [(ngModel)]="nueva.datos_sensibles" />
+                <span>Autorizo también el tratamiento de datos sensibles de mi caso (opcional).</span>
+              </label>
+
               @if (error()) {
                 <p class="error" role="alert">{{ error() }}</p>
               }

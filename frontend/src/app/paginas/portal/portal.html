@@ -20,7 +20,7 @@
         <div>
           <span class="sobre">Portal de clientes</span>
           <h1>Hola, {{ nombre() }}</h1>
-          <p>Aquí puedes ver cómo va tu proceso, tus próximas citas y el contacto de tu abogada.</p>
+          <p>Aquí puedes ver cómo va tu proceso, tus próximas citas, tus documentos y el contacto de tu abogada.</p>
         </div>
 
         <!-- Próxima cita destacada -->
@@ -34,6 +34,9 @@
             <span class="cuando"><ion-icon name="time-outline" /> {{ cita.fecha_hora | date: 'h:mm a' }}</span>
             @if (cita.lugar) {
               <span class="cuando"><ion-icon name="business-outline" /> {{ cita.lugar }}</span>
+              <button type="button" class="btn-mapa claro" (click)="verUbicacion(cita)">
+                <ion-icon name="map-outline" /> Ver ubicación
+              </button>
             }
           </div>
         }
@@ -62,6 +65,11 @@
                       · <ion-icon name="business-outline" /> {{ cita.lugar }}
                     }
                   </span>
+                  @if (cita.lugar) {
+                    <button type="button" class="btn-mapa" (click)="verUbicacion(cita)">
+                      <ion-icon name="map-outline" /> Ver en el mapa
+                    </button>
+                  }
                   @if (cita.caso_titulo) {
                     <span class="detalle"><ion-icon name="briefcase-outline" /> {{ cita.caso_titulo }}</span>
                   }
@@ -96,8 +104,13 @@
                 }
               </dl>
 
-              @if (caso.abogada_telefono || caso.abogada_correo) {
+              @if (caso.abogada_telefono || caso.abogada_correo || caso.abogada_whatsapp) {
                 <div class="contacto-abogada">
+                  @if (caso.abogada_whatsapp) {
+                    <a class="whatsapp" [href]="whatsapp(caso)" target="_blank" rel="noopener">
+                      <ion-icon name="logo-whatsapp" /> WhatsApp
+                    </a>
+                  }
                   @if (caso.abogada_telefono) {
                     <a [href]="'tel:' + caso.abogada_telefono"><ion-icon name="call-outline" /> {{ caso.abogada_telefono }}</a>
                   }
@@ -110,6 +123,13 @@
               @if (caso.descripcion) {
                 <p class="descripcion">{{ caso.descripcion }}</p>
               }
+
+              <h3>Documentos del caso</h3>
+              <p class="ayuda-docs">
+                Aquí están los documentos que comparte tu abogada. También puedes subir los tuyos
+                (PDF o Word): tu abogada los verá en tu caso.
+              </p>
+              <app-documentos modo="cliente" [casoId]="caso.id" [documentos]="caso.documentos" (cambio)="cargar()" />
 
               <h3>¿Cómo va tu proceso?</h3>
               <ol class="linea-tiempo">
@@ -153,10 +173,13 @@
             Cambiar contraseña
           </ion-button>
           <p class="nota">¿Algún dato está mal? Avísale a tu abogada para corregirlo.</p>
+
+          <!-- Protección de datos: solo la ven el cliente y la abogada que autorizó -->
+          <app-proteccion-datos class="seccion-datos" />
         </aside>
       </div>
     }
   </main>
 
-  <app-pie [despacho]="despacho()" />
+  <app-pie [despacho]="despacho()" [abogadas]="abogadas()" />
 </ion-content>

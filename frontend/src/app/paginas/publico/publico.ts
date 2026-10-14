@@ -4,9 +4,11 @@ import { IonButton, IonContent, IonIcon, IonSpinner, ModalController } from '@io
 
 import { SolicitudForm } from '../../formularios/solicitud-form';
 import { ApiService } from '../../servicios/api.service';
+import { enlaceWhatsapp } from '../../servicios/enlaces';
 import { AbogadaPublica, Presentacion } from '../../servicios/modelos';
 import { SesionService } from '../../servicios/sesion.service';
 import { VentanasService } from '../../servicios/ventanas.service';
+import { Aparecer } from '../../sitio/aparecer';
 import { Cabecera } from '../../sitio/cabecera';
 import { PerfilCompleto } from '../../sitio/perfil-completo';
 import { Pie } from '../../sitio/pie';
@@ -20,7 +22,7 @@ import { Pie } from '../../sitio/pie';
  */
 @Component({
   selector: 'app-publico',
-  imports: [RouterLink, IonContent, IonButton, IonIcon, IonSpinner, Cabecera, Pie],
+  imports: [RouterLink, IonContent, IonButton, IonIcon, IonSpinner, Cabecera, Pie, Aparecer],
   templateUrl: './publico.html',
   styleUrl: './publico.scss',
 })
@@ -35,6 +37,8 @@ export class PublicoPagina {
 
   datos = signal<Presentacion | null>(null);
   error = signal(false);
+  /** true cuando ya se bajó un poco: la cabecera toma sombra */
+  desplazada = signal(false);
 
   /** Pasos de la sección "Cómo funciona" */
   readonly pasos = [
@@ -59,6 +63,11 @@ export class PublicoPagina {
     return nombre.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join('');
   }
 
+  alDesplazar(evento: CustomEvent<{ scrollTop: number }>): void {
+    const bajo = evento.detail.scrollTop > 24;
+    if (bajo !== this.desplazada()) this.desplazada.set(bajo);
+  }
+
   /** Desplaza la página hasta una sección (#nosotras, #contacto, ...) */
   irA(id: string): void {
     const seccion = this.pagina().nativeElement.querySelector<HTMLElement>(`#${id}`);
@@ -71,7 +80,7 @@ export class PublicoPagina {
   consultar(abogadaId?: number): void {
     const datos = this.datos();
     if (!datos) return;
-    this.ventanas.abrir(SolicitudForm, { abogadas: datos.abogadas, abogadaId });
+    this.ventanas.abrir(SolicitudForm, { abogadas: datos.abogadas, abogadaId, despacho: datos.despacho });
   }
 
   /** Abre la ventana con todo el perfil de la abogada */
@@ -87,6 +96,12 @@ export class PublicoPagina {
     if (role === 'consultar') {
       this.consultar(abogada.id);
     }
+  }
+
+  /** Chat de WhatsApp con la abogada, con un saludo ya escrito */
+  whatsapp(abogada: AbogadaPublica): string {
+    const nombre = abogada.nombre.split(' ')[0];
+    return enlaceWhatsapp(abogada.whatsapp, `Hola ${nombre}, quiero hacer una consulta legal.`);
   }
 
   /** Primeras líneas de un texto con varias líneas (para el resumen de la tarjeta) */

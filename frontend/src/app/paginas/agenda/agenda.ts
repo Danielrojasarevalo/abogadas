@@ -14,6 +14,7 @@ import {
   IonSegment,
   IonSegmentButton,
   IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 
 import { CitaForm } from '../../formularios/cita-form';
@@ -22,6 +23,7 @@ import { AvisosService } from '../../servicios/avisos.service';
 import { aFechaLocal } from '../../servicios/fechas';
 import { Cita } from '../../servicios/modelos';
 import { VentanasService } from '../../servicios/ventanas.service';
+import { Ubicacion } from '../../sitio/ubicacion';
 
 /** Un día de la agenda con sus citas */
 interface DiaAgenda {
@@ -32,6 +34,7 @@ interface DiaAgenda {
 /**
  * Agenda del despacho: citas agrupadas por día.
  * Pestañas: próximas (desde hoy y sin completar) o todas.
+ * Cada cita muestra su ubicación y un botón para verla en el mapa.
  */
 @Component({
   selector: 'app-agenda',
@@ -58,6 +61,7 @@ export class AgendaPagina {
   private api = inject(ApiService);
   private avisos = inject(AvisosService);
   private ventanas = inject(VentanasService);
+  private modal = inject(ModalController);
 
   citas = signal<Cita[]>([]);
   cargando = signal(false);
@@ -111,6 +115,27 @@ export class AgendaPagina {
       },
       error: (e) => this.avisos.error(e),
     });
+  }
+
+  /** Lugar de la cita; si es una reunión sin lugar escrito, la dirección del cliente */
+  ubicacion(cita: Cita): string {
+    return cita.lugar.trim() || (cita.tipo === 'reunion' ? (cita.cliente_direccion ?? '').trim() : '');
+  }
+
+  /** Abre la ventana con el mapa del lugar de la cita */
+  async verUbicacion(cita: Cita): Promise<void> {
+    const ventana = await this.modal.create({
+      component: Ubicacion,
+      componentProps: {
+        titulo: cita.titulo,
+        lugar: this.ubicacion(cita),
+        fechaHora: cita.fecha_hora,
+        persona: cita.cliente_nombre,
+        esDireccionCliente: !cita.lugar.trim(),
+      },
+      cssClass: 'ventana-formulario',
+    });
+    await ventana.present();
   }
 
   async nueva(): Promise<void> {

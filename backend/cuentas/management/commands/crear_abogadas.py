@@ -13,6 +13,18 @@ from django.core.management.base import BaseCommand, CommandError
 
 from despacho.models import PerfilAbogada
 
+# WhatsApp de cada abogada (se pone solo si en "Mi perfil" todavía no tiene uno)
+WHATSAPP = {
+    "eli": "+57 320 7285053",  # Elizabeth Imbachi
+    "kathe": "+57 313 3957573",  # Katherine Rojas
+}
+
+# Ciudad donde atiende cada abogada (se pone solo si en "Mi perfil" todavía no tiene una)
+CIUDAD = {
+    "eli": "Pitalito, Huila",  # Elizabeth Imbachi
+    "kathe": "Neiva, Huila",  # Katherine Rojas
+}
+
 
 class Command(BaseCommand):
     help = "Crea las dos usuarias administradoras (abogadas) definidas en el .env"
@@ -35,7 +47,13 @@ class Command(BaseCommand):
             cuenta.set_password(password)
             cuenta.save()
             # Perfil público (descripción y ramas se llenan desde "Mi perfil")
-            PerfilAbogada.objects.get_or_create(usuario=cuenta)
+            perfil, _ = PerfilAbogada.objects.get_or_create(usuario=cuenta)
+            if not perfil.whatsapp and usuario in WHATSAPP:
+                perfil.whatsapp = WHATSAPP[usuario]
+                perfil.save(update_fields=["whatsapp"])
+            if not perfil.ciudad and usuario in CIUDAD:
+                perfil.ciudad = CIUDAD[usuario]
+                perfil.save(update_fields=["ciudad"])
 
             accion = "creada" if creada else "actualizada"
             self.stdout.write(self.style.SUCCESS(f"Usuaria '{usuario}' {accion}."))

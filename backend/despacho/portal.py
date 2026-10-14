@@ -8,12 +8,14 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
-from .models import Caso, Cita
-from .serializers import CasoPortalSerializer, CitaClienteSerializer
+from .models import Caso, Cita, Documento
+from .serializers import CasoPortalSerializer, CitaClienteSerializer, DocumentoPortalSerializer
+from .views import descargar_archivo
 
 
 class EsCliente(BasePermission):
@@ -37,7 +39,7 @@ def mis_casos(request):
     casos = (
         Caso.objects.filter(cliente=cliente)
         .select_related("abogada__perfil")
-        .prefetch_related("actuaciones", "citas")
+        .prefetch_related("actuaciones", "citas", "documentos__subido_por")
     )
     # Citas pendientes del cliente: las suyas directamente o las de alguno de sus casos
     citas = (
@@ -77,3 +79,42 @@ def cambiar_password(request):
     usuario.set_password(nueva)
     usuario.save()
     return Response({"detail": "Contraseña actualizada."})
+
+
+@api_view(["POST"])
+@permission_classes([EsCliente])
+@parser_classes([MultiPartParser, FormParser])
+def subir_documento(request):
+    """El cliente sube un PDF o Word a uno de SUS casos: caso, nombre, descripcion, archivo."""
+    serializer = DocumentoPortalSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    if serializer.validated_data["caso"].cliente_id != request.user.cliente.id:
+        return Response({"detail": "Ese caso no es tuyo."}, status=status.HTTP_403_FORBIDDEN)
+    # Lo que sube el cliente siempre lo ven él y su abogada
+    documento = serializer.save(subido_por=request.user, subido_por_cliente=True, visible_cliente=True)
+    return Response(DocumentoPortalSerializer(documento).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET"])
+@permission_classes([EsCliente])
+def descargar_documento(request, pk):
+    """El cliente descarga un documento visible de uno de sus casos."""
+    documento = Documento.objects.filter(
+        pk=pk, caso__cliente=request.user.cliente, visible_cliente=True
+    ).first()
+    if documento is None:
+        return Response({"detail": "Documento no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+    return descargar_archivo(documento)
+
+
+@api_view(["DELETE"])
+@permission_classes([EsCliente])
+def borrar_documento(request, pk):
+    """El cliente solo puede borrar los documentos que él mismo subió."""
+    documento = Documento.objects.filter(
+        pk=pk, caso__cliente=request.user.cliente, subido_por=request.user
+    ).first()
+    if documento is None:
+        return Response({"detail": "Documento no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+    documento.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

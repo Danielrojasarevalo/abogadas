@@ -139,3 +139,10 @@ if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER or "no-responder@abogadas.local"
+
+
+# ---------- Documentos subidos (PDF y Word de los casos) ----------
+# Se guardan en backend/media/. No se publican directamente: se descargan por la API,
+# que revisa que quien pide el archivo tenga permiso para verlo.
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "media/"

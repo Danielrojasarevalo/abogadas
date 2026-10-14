@@ -97,3 +97,39 @@
     letter-spacing: 0;
   }
 }
+
+/* Botón para ver desde dónde se envió la consulta */
+.ver-ubicacion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid rgba(var(--ion-color-secondary-rgb), 0.5);
+  border-radius: 999px;
+  background: rgba(var(--ion-color-secondary-rgb), 0.1);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ion-color-secondary-shade);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(var(--ion-color-secondary-rgb), 0.2);
+  }
+}
+
+/* Documento y ciudad de quien pide la consulta */
+.identificacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+
+  ion-icon {
+    color: var(--ion-color-secondary);
+  }
+}

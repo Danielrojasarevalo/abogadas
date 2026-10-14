@@ -1,13 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { AlertController, IonButton, IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { AlertController, IonButton, IonContent, IonIcon, IonSpinner, ModalController } from '@ionic/angular/standalone';
 
 import { ApiService } from '../../servicios/api.service';
 import { AvisosService } from '../../servicios/avisos.service';
-import { CasoPortal, InfoDespacho } from '../../servicios/modelos';
+import { enlaceWhatsapp } from '../../servicios/enlaces';
+import { AbogadaPublica, CasoPortal, InfoDespacho, Presentacion } from '../../servicios/modelos';
 import { SesionService } from '../../servicios/sesion.service';
 import { Cabecera } from '../../sitio/cabecera';
+import { Documentos } from '../../sitio/documentos';
 import { Pie } from '../../sitio/pie';
+import { ProteccionDatos } from '../../sitio/proteccion-datos';
+import { Ubicacion } from '../../sitio/ubicacion';
 
 /** Cita tal como la ve el cliente */
 interface CitaCliente {
@@ -29,13 +33,14 @@ interface DatosPortal {
 
 /**
  * Portal del cliente: al entrar ve todo lo que necesita.
- * - Sus próximas citas (fecha, hora, lugar y tipo).
- * - Sus casos: estado, abogada y su contacto, y el historial del proceso.
+ * - Sus próximas citas (fecha, hora, lugar con mapa y tipo).
+ * - Sus casos: estado, abogada y su contacto (WhatsApp), documentos y el historial del proceso.
  * - Sus datos y la opción de cambiar la contraseña.
+ * - Protección de datos: su autorización y sus peticiones (Ley 1581 de 2012).
  */
 @Component({
   selector: 'app-portal',
-  imports: [DatePipe, IonContent, IonButton, IonIcon, IonSpinner, Cabecera, Pie],
+  imports: [DatePipe, IonContent, IonButton, IonIcon, IonSpinner, Cabecera, Pie, Documentos, ProteccionDatos],
   templateUrl: './portal.html',
   styleUrl: './portal.scss',
 })
@@ -44,9 +49,11 @@ export class PortalPagina {
   private avisos = inject(AvisosService);
   private alerta = inject(AlertController);
   private sesion = inject(SesionService);
+  private modal = inject(ModalController);
 
   datos = signal<DatosPortal | null>(null);
   despacho = signal<InfoDespacho | null>(null);
+  abogadas = signal<AbogadaPublica[]>([]);
   cargando = signal(true);
 
   /** Primer nombre para el saludo */
@@ -58,7 +65,10 @@ export class PortalPagina {
   ionViewWillEnter(): void {
     this.cargar();
     // Datos de contacto del despacho para el footer
-    this.api.get<{ despacho: InfoDespacho }>('publico/').subscribe((r) => this.despacho.set(r.despacho));
+    this.api.get<Presentacion>('publico/').subscribe((r) => {
+      this.despacho.set(r.despacho);
+      this.abogadas.set(r.abogadas);
+    });
   }
 
   cargar(): void {
@@ -73,6 +83,21 @@ export class PortalPagina {
         this.avisos.error(e);
       },
     });
+  }
+
+  /** Abre la ventana con el mapa del lugar de la cita */
+  async verUbicacion(cita: CitaCliente): Promise<void> {
+    const ventana = await this.modal.create({
+      component: Ubicacion,
+      componentProps: { titulo: cita.titulo, lugar: cita.lugar, fechaHora: cita.fecha_hora },
+      cssClass: 'ventana-formulario',
+    });
+    await ventana.present();
+  }
+
+  /** Chat de WhatsApp con la abogada del caso */
+  whatsapp(caso: CasoPortal): string {
+    return enlaceWhatsapp(caso.abogada_whatsapp, `Hola, soy ${this.datos()?.cliente.nombre}. Te escribo por mi caso "${caso.titulo}".`);
   }
 
   /** Ventana para cambiar la contraseña */

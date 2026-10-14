@@ -21,12 +21,13 @@ import { CitaForm } from '../../formularios/cita-form';
 import { ApiService } from '../../servicios/api.service';
 import { AvisosService } from '../../servicios/avisos.service';
 import { hoy } from '../../servicios/fechas';
-import { Actuacion, Caso, Cita } from '../../servicios/modelos';
+import { Actuacion, Caso, Cita, Documento } from '../../servicios/modelos';
 import { VentanasService } from '../../servicios/ventanas.service';
+import { Documentos } from '../../sitio/documentos';
 
 /**
  * Ficha de un caso: datos generales, historial de actuaciones (línea de tiempo)
- * y citas relacionadas.
+ * documentos (PDF y Word) y citas relacionadas.
  */
 @Component({
   selector: 'app-caso-detalle',
@@ -45,6 +46,7 @@ import { VentanasService } from '../../servicios/ventanas.service';
     IonInput,
     IonTextarea,
     IonProgressBar,
+    Documentos,
   ],
   templateUrl: './caso-detalle.html',
   styleUrl: './caso-detalle.scss',
@@ -61,6 +63,7 @@ export class CasoDetallePagina {
   caso = signal<Caso | null>(null);
   actuaciones = signal<Actuacion[]>([]);
   citas = signal<Cita[]>([]);
+  documentos = signal<Documento[]>([]);
   cargando = signal(false);
 
   // Formulario rápido para agregar una actuación
@@ -87,6 +90,7 @@ export class CasoDetallePagina {
       },
     });
     this.cargarActuaciones();
+    this.cargarDocumentos();
     // Citas ligadas a este caso
     this.api.listar<Cita>('citas', { caso: id }).subscribe((lista) => this.citas.set(lista));
   }
@@ -95,6 +99,12 @@ export class CasoDetallePagina {
     this.api
       .listar<Actuacion>('actuaciones', { caso: this.id })
       .subscribe((lista) => this.actuaciones.set(lista));
+  }
+
+  cargarDocumentos(): void {
+    this.api
+      .listar<Documento>('documentos', { caso: this.id })
+      .subscribe((lista) => this.documentos.set(lista));
   }
 
   agregarActuacion(): void {

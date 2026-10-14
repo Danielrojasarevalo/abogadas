@@ -6,6 +6,7 @@ import { abogadaGuard, clienteGuard, sinSesionGuard } from './servicios/guardias
  * Rutas de la aplicación.
  * - /          Página pública: presentación del despacho y de las abogadas.
  * - /login     Inicio de sesión (abogadas y clientes).
+ * - /privacidad Política de tratamiento de datos y términos (pública).
  * - /portal    Portal del cliente: ve cómo va su proceso.
  * - /panel/... Panel de administración de las abogadas (menú lateral).
  * Las páginas se cargan bajo demanda (loadComponent) para que la app abra más rápido.
@@ -20,6 +21,10 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [sinSesionGuard],
     loadComponent: () => import('./paginas/login/login').then((m) => m.LoginPagina),
+  },
+  {
+    path: 'privacidad',
+    loadComponent: () => import('./paginas/privacidad/privacidad').then((m) => m.PrivacidadPagina),
   },
   {
     path: 'portal',
@@ -43,6 +48,10 @@ export const routes: Routes = [
       {
         path: 'solicitudes',
         loadComponent: () => import('./paginas/solicitudes/solicitudes').then((m) => m.SolicitudesPagina),
+      },
+      {
+        path: 'datos',
+        loadComponent: () => import('./paginas/datos/datos').then((m) => m.DatosPagina),
       },
       { path: 'perfil', loadComponent: () => import('./paginas/perfil/perfil').then((m) => m.PerfilPagina) },
     ],

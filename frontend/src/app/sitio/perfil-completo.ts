@@ -38,6 +38,9 @@ import { AbogadaPublica } from '../servicios/modelos';
         <span class="monograma">{{ iniciales() }}</span>
         <h1>{{ abogada.nombre }}</h1>
         <span class="titulo">{{ abogada.titulo }}</span>
+        @if (abogada.ciudad) {
+          <span class="ciudad">{{ abogada.ciudad }}</span>
+        }
         @if (abogada.frase) {
           <p class="frase">“{{ abogada.frase }}”</p>
         }
@@ -50,7 +53,12 @@ import { AbogadaPublica } from '../servicios/modelos';
             <div><strong>{{ abogada.anios_experiencia }}+</strong><span>años de experiencia</span></div>
           }
           @if (abogada.tarjeta_profesional) {
-            <div><strong>T.P. {{ abogada.tarjeta_profesional }}</strong><span>tarjeta profesional</span></div>
+            <div>
+              <strong>T.P. {{ abogada.tarjeta_profesional }}</strong>
+              <span>tarjeta profesional ·
+                <a href="https://sirna.ramajudicial.gov.co" target="_blank" rel="noopener">verificar en SIRNA</a>
+              </span>
+            </div>
           }
           @if (abogada.atencion) {
             <div><strong>{{ abogada.atencion }}</strong><span>atención</span></div>
@@ -62,12 +70,13 @@ import { AbogadaPublica } from '../servicios/modelos';
       }
 
       <div class="cuerpo">
-        @if (abogada.descripcion) {
-          <section>
-            <h2>Sobre mí</h2>
-            <p class="texto">{{ abogada.descripcion }}</p>
-          </section>
-        }
+        <!-- Si todavía no escribió su presentación, se muestra un texto por defecto -->
+        <section>
+          <h2>Sobre mí</h2>
+          <p class="texto">
+            {{ abogada.descripcion || 'Abogada del despacho, dedicada a brindar una asesoría cercana y clara.' }}
+          </p>
+        </section>
 
         @if (abogada.ramas.length) {
           <section>
@@ -165,6 +174,7 @@ import { AbogadaPublica } from '../servicios/modelos';
     }
 
     .titulo { font-weight: 600; color: var(--ion-color-secondary-tint); }
+    .ciudad { display: block; margin-top: 2px; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
 
     .frase {
       max-width: 460px;
